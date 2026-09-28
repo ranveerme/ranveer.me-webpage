@@ -246,7 +246,7 @@
 </script>
 
 <div
-  class="fullWidth relative flex min-h-[70vh] items-center justify-center overflow-hidden p-8 md:min-h-[80vh] md:p-16"
+  class="fullWidth relative flex min-h-[70vh] items-center justify-center overflow-hidden px-4 py-8 sm:p-8 md:min-h-[80vh] md:p-16"
 >
   <div class="absolute inset-0 overflow-hidden">
     <div class="absolute inset-0 overflow-hidden">
@@ -282,14 +282,14 @@
   </div>
 
   <div
-    class="relative z-10 flex w-full max-w-[900px] flex-col items-center justify-center p-8 text-center"
+    class="relative z-10 flex w-full max-w-[900px] flex-col items-center justify-center px-2 py-6 text-center sm:p-8"
   >
     <h1
-      class="mb-4 text-6xl leading-none font-extrabold tracking-tight text-white text-shadow-lg md:text-8xl"
+      class="mb-4 whitespace-nowrap text-[clamp(2.25rem,11.5vw,3.75rem)] leading-none font-extrabold tracking-tight text-white text-shadow-lg sm:text-6xl md:text-8xl"
     >
       Ranveer<span class="text-primary">.</span>Wilkhu
     </h1>
-    <p class="mb-12 text-2xl tracking-wide text-white/80 text-shadow-md md:text-4xl">
+    <p class="mb-8 max-w-[95%] text-lg tracking-wide text-white/80 text-shadow-md sm:text-2xl md:mb-12 md:text-4xl">
       Economics, Finance, Technology & Ideas
     </p>
     <div class="mt-4 flex flex-col justify-center gap-6 md:flex-row md:items-center md:gap-6">

@@ -3,7 +3,7 @@
 </script>
 
 <footer
-  class="bg-background/90 relative z-10 mt-20 border-t border-white/5 pt-16 pb-10 shadow-lg backdrop-blur-md"
+  class="bg-background/90 relative z-10 mt-12 border-t border-white/5 pt-9 pb-7 shadow-lg backdrop-blur-md md:mt-20 md:pt-16 md:pb-10"
 >
   <!-- Decorative top border with gradient -->
   <div
@@ -11,9 +11,9 @@
   ></div>
 
   <div class="mx-auto max-w-[900px] px-4 sm:px-6 lg:px-8">
-    <div class="mb-10 grid w-full grid-cols-1 gap-12 md:grid-cols-3 md:justify-between">
-      <div class="animate-fadeIn relative">
-        <h2 class="mb-4 text-xl font-bold text-white">
+    <div class="mb-7 grid w-full grid-cols-2 gap-x-6 gap-y-8 md:mb-10 md:grid-cols-3 md:gap-12">
+      <div class="animate-fadeIn relative col-span-2 md:col-span-1">
+        <h2 class="mb-3 text-base font-bold text-white md:mb-4 md:text-xl">
           <span>Ranveer</span><span class="text-primary">.</span><span>Wilkhu</span>
         </h2>
 
@@ -27,9 +27,9 @@
       </div>
 
       <div class="animate-fadeIn relative md:text-center">
-        <h2 class="mb-4 text-xl font-bold text-white">Navigation</h2>
+        <h2 class="mb-3 text-base font-bold text-white md:mb-4 md:text-xl">Navigation</h2>
 
-        <ul class="space-y-2">
+        <ul class="space-y-1.5 md:space-y-2">
           <li><Link href="/" variant="footer">Home</Link></li>
           <li><Link href="/about" variant="footer">About</Link></li>
           <li><Link href="/journal" variant="footer">Writing</Link></li>
@@ -38,9 +38,9 @@
       </div>
 
       <div class="animate-fadeIn relative md:text-right">
-        <h2 class="mb-4 text-xl font-bold text-white">Connect</h2>
+        <h2 class="mb-3 text-base font-bold text-white md:mb-4 md:text-xl">Connect</h2>
 
-        <ul class="space-y-2">
+        <ul class="space-y-1.5 md:space-y-2">
           <!-- GitHub -->
           <li>
             <Link
@@ -118,7 +118,7 @@
       </div>
     </div>
 
-    <div class="mt-8 text-center text-sm text-gray-400">
+    <div class="mt-6 text-center text-xs text-gray-400 md:mt-8 md:text-sm">
       <p>
         Built with
         <Link href="https://kit.svelte.dev" variant="tech" external={true}>
