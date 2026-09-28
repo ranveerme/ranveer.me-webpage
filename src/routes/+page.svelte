@@ -3,16 +3,16 @@
 </script>
 
 <svelte:head>
-  <title>Ranveer Wilkhu | Economics, Finance & Technology</title>
+  <title>Ranveer Singh Wilkhu | Economics, Finance & Technology</title>
 
   <meta
     name="description"
-    content="Personal website and writing by Ranveer Wilkhu, covering economics, finance, technology, projects and ideas."
+    content="Personal website and writing by Ranveer Singh Wilkhu, covering economics, finance, technology, projects and ideas."
   />
 
   <meta
     name="keywords"
-    content="Ranveer Wilkhu, economics, finance, technology, projects, blog"
+    content="Ranveer Singh Wilkhu, Ranveer Wilkhu, economics, finance, technology, projects, blog"
   />
 
   <meta property="og:title" content="Ranveer Wilkhu" />
@@ -48,10 +48,25 @@
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Ranveer Wilkhu",
-      "url": "https://ranveer.me",
-      "description": "Personal website and writing by Ranveer Wilkhu, covering economics, finance, technology, projects and ideas."
+      "@graph": [
+        {
+          "@type": "Person",
+          "name": "Ranveer Singh Wilkhu",
+          "alternateName": "Ranveer Wilkhu",
+          "url": "https://ranveer.me",
+          "sameAs": [
+            "https://www.linkedin.com/in/ranveer-wilkhu",
+            "https://github.com/ranveerme"
+          ],
+          "description": "Economics and Finance student interested in economics, finance, technology and projects."
+        },
+        {
+          "@type": "WebSite",
+          "name": "Ranveer Singh Wilkhu",
+          "url": "https://ranveer.me",
+          "description": "Personal website and writing by Ranveer Singh Wilkhu."
+        }
+      ]
     }
   </script>
 </svelte:head>
