@@ -20,7 +20,7 @@ Very little worked perfectly the first time, and most of the useful learning cam
 
 <figure>
   <img
-    src="/images/openastro/final-mount.jpg"
+    src="/images/openastro/final-mount.jpeg"
     alt="Completed OpenAstroExplorer mount assembled on a tripod"
   />
   <figcaption>
@@ -34,7 +34,7 @@ Much of the hardware was adapted from components I either already owned or could
 
 <figure>
   <img
-    src="/images/openastro/workbench-build.jpg"
+    src="/images/openastro/workbench-build.jpeg"
     alt="OpenAstroExplorer components being assembled on my desk alongside the project documentation"
   />
   <figcaption>
@@ -50,7 +50,7 @@ Different motors required different current settings; the drivers had different 
 
 <figure>
   <img
-    src="/images/openastro/hardware-controller.jpg"
+    src="/images/openastro/hardware-controller.jpeg"
     alt="OpenAstroExplorer mechanical assembly alongside the MKS Gen L v2.1 controller"
   />
   <figcaption>
@@ -108,7 +108,7 @@ My immediate assumption was that the worm and worm wheel were badly meshed.
 
 <figure>
   <img
-    src="/images/openastro/dec-worm-gear.jpg"
+    src="/images/openastro/dec-worm-gear.jpeg"
     alt="Close-up of the declination worm gear and brass worm wheel"
   />
   <figcaption>
@@ -126,7 +126,7 @@ The reason was surprisingly simple: the brass worm wheel had a **6 mm bore mount
 
 <figure>
   <img
-    src="/images/openastro/shaft-measurement.jpg"
+    src="/images/openastro/shaft-measurement.jpeg"
     alt="Measuring the steel shaft with a caliper while diagnosing the worm wheel fit"
   />
   <figcaption>
@@ -174,7 +174,7 @@ The Raspberry Pi runs an **INDI server**, which provides a standard interface be
 
 <figure>
   <img
-    src="/images/openastro/pi-controller.jpg"
+    src="/images/openastro/pi-controller.jpeg"
     alt="Raspberry Pi 3B and MKS Gen L controller used in the OpenAstroExplorer system"
   />
   <figcaption>
