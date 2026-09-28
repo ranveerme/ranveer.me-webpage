@@ -41,6 +41,7 @@
         <h2 class="mb-4 text-xl font-bold text-white">Connect</h2>
 
         <ul class="space-y-2">
+          <!-- GitHub -->
           <li>
             <Link
               href="https://github.com/ranveerme"
@@ -65,6 +66,30 @@
             </Link>
           </li>
 
+          <!-- LinkedIn -->
+          <li>
+            <Link
+              href="https://www.linkedin.com/in/ranveer-wilkhu"
+              variant="footer"
+              external={true}
+              className="inline-flex items-center gap-2 group"
+            >
+              <svg
+                class="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.32 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.1 20.45H3.54V9H7.1v11.45z"
+                ></path>
+              </svg>
+
+              LinkedIn
+            </Link>
+          </li>
+
+          <!-- Email -->
           <li>
             <Link
               href="mailto:singh@ranveer.me"
@@ -82,7 +107,7 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v10a2 2 0 002 2z"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                 ></path>
               </svg>
 
