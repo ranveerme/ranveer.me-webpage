@@ -13,6 +13,14 @@
   const tagColor = getTagColor(tag)
 </script>
 
+<svelte:head>
+  <title>{tag} | Ranveer Wilkhu</title>
+  <meta
+    name="description"
+    content={`Writing by Ranveer Wilkhu tagged with ${tag}.`}
+  />
+</svelte:head>
+
 <PageContainer>
   <PageHead
     title="Posts tagged: {tag}"

@@ -15,10 +15,17 @@
   const tagColor = tag ? getTagColor(tag) : getTagColor("default")
 </script>
 
+<svelte:head>
+  <title>{title} | Ranveer Wilkhu</title>
+  <meta name="description" content={description} />
+</svelte:head>
+
 <div class="post-container">
   <div class="post-header glass-card" style="--tag-color: {tagColor};">
     <div class="back-button-container">
-      <Button href="/journal" variant="secondary" className="back-button">❮ Back to Journal</Button>
+      <Button href="/journal" variant="secondary" className="back-button">
+        ❮ Back to Writing
+      </Button>
     </div>
 
     <h1 class="title">{title}</h1>
@@ -34,6 +41,7 @@
           {tag.toLowerCase()}
         </Link>
       {/if}
+
       <span class="date-divider">•</span>
       <span class="date">{formatDate(date)}</span>
     </div>
@@ -73,6 +81,7 @@
       opacity: 0;
       transform: translateY(20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);

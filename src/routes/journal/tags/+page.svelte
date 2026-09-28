@@ -6,75 +6,91 @@
   import PageContainer from "$lib/components/PageContainer.svelte"
   import PageHead from "$lib/components/PageHead.svelte"
 
-  /** @type {import('./$types').PageData} */
   export let data: PageData
   const { tags } = data
 
-  type Tag = { name: string; count: number; posts: Post[] }
+  type Tag = {
+    name: string
+    count: number
+    posts: Post[]
+  }
 
-  const importantSinglePostTags = ["svelte", "react", "next.js", "typescript", "javascript"]
-  const filteredTags: Tag[] = tags.filter(
-    (tag: Tag) => tag.count > 1 || importantSinglePostTags.includes(tag.name.toLowerCase())
-  )
+  const allTags: Tag[] = tags
 
-  const tagsByLetter = filteredTags.reduce<Record<string, Tag[]>>((groups, tag) => {
+  const tagsByLetter = allTags.reduce<Record<string, Tag[]>>((groups, tag) => {
     const firstLetter = tag.name.charAt(0).toUpperCase()
     groups[firstLetter] ??= []
     groups[firstLetter].push(tag)
     return groups
   }, {})
 
-  const groupedTags = Object.entries(tagsByLetter).sort((a, b) => a[0].localeCompare(b[0]))
+  const groupedTags = Object.entries(tagsByLetter).sort((a, b) =>
+    a[0].localeCompare(b[0])
+  )
 
-  const maxCount = Math.max(...filteredTags.map((tag) => tag.count))
+  const maxCount =
+    allTags.length > 0
+      ? Math.max(...allTags.map((tag) => tag.count))
+      : 1
 
   function getTagSize(count: number, maxCount: number): string {
     const minSize = 0.8
     const maxSize = 1.4
     const ratio = Math.max(0.5, count / maxCount)
     const size = minSize + ratio * (maxSize - minSize)
+
     return size.toFixed(2)
   }
 </script>
 
 <svelte:head>
-  <title>Topics - loke.dev</title>
-  <meta name="description" content="Browse blog posts by topic" />
-  <meta name="Cache-Control" content="max-age=1, stale-while-revalidate=59" />
+  <title>Topics | Ranveer Wilkhu</title>
+  <meta
+    name="description"
+    content="Browse writing by Ranveer Wilkhu by topic."
+  />
 </svelte:head>
 
 <PageContainer>
   <PageHead
-    title="Tags"
-    subtitle="Browse by Topic"
-    description="Browse all blog posts by tag to find topics that interest you"
+    title="Topics"
+    subtitle="Browse by topic"
+    description="Explore my writing across different subjects and ideas."
   />
 
   <div class="tag-cloud-container relative">
-    <h2 class="relative z-10 mb-8 text-3xl font-bold text-white">Browse by Tag</h2>
+    {#if groupedTags.length > 0}
+      <h2 class="relative z-10 mb-8 text-3xl font-bold text-white">
+        Browse by topic
+      </h2>
 
-    <div class="tag-cloud glass-card border-l-primary relative z-10 border-l-3">
-      {#each groupedTags as [letter, tagsInGroup] (letter)}
-        <div class="tag-group">
-          <h4 class="letter-heading mb-2">{letter}</h4>
-          <ul class="space-y-1">
-            {#each tagsInGroup as tag (tag.name)}
-              <li>
-                <Link
-                  href={`/journal/tags/${encodeURIComponent(tag.name)}`}
-                  className="tag-item"
-                  style="--tag-size: {getTagSize(tag.count, maxCount)}; --tag-color: {getTagColor(
-                    tag.name
-                  )};"
-                >
-                  {tag.name} <span class="tag-count">({tag.count})</span>
-                </Link>
-              </li>
-            {/each}
-          </ul>
-        </div>
-      {/each}
-    </div>
+      <div class="tag-cloud glass-card border-l-primary relative z-10 border-l-3">
+        {#each groupedTags as [letter, tagsInGroup] (letter)}
+          <div class="tag-group">
+            <h4 class="letter-heading mb-2">{letter}</h4>
+
+            <ul class="space-y-1">
+              {#each tagsInGroup as tag (tag.name)}
+                <li>
+                  <Link
+                    href={`/journal/tags/${encodeURIComponent(tag.name)}`}
+                    className="tag-item"
+                    style="--tag-size: {getTagSize(tag.count, maxCount)}; --tag-color: {getTagColor(tag.name)};"
+                  >
+                    {tag.name}
+                    <span class="tag-count">({tag.count})</span>
+                  </Link>
+                </li>
+              {/each}
+            </ul>
+          </div>
+        {/each}
+      </div>
+    {:else}
+      <div class="empty-state">
+        <p class="text-gray-300">No topics yet.</p>
+      </div>
+    {/if}
   </div>
 </PageContainer>
 
@@ -114,5 +130,13 @@
   .tag-count {
     font-size: 0.8em;
     opacity: 0.7;
+  }
+
+  .empty-state {
+    margin-top: 2rem;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
   }
 </style>
