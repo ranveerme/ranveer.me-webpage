@@ -2,132 +2,122 @@
   import PageContainer from "$lib/components/PageContainer.svelte"
   import PageHead from "$lib/components/PageHead.svelte"
   import { fade } from "svelte/transition"
-
-  const yearsOfWork = new Date().getFullYear() - new Date("2017").getFullYear()
 </script>
 
 <svelte:head>
-  <title>About - loke.dev</title>
-  <meta name="description" content="This is the short story of Loke." />
-  <meta name="Cache-Control" content="max-age=1, stale-while-revalidate=59" />
+  <title>About | Ranveer Wilkhu</title>
+  <meta
+    name="description"
+    content="About Ranveer Wilkhu — Economics and Finance student interested in markets, technology, systems and building things."
+  />
 </svelte:head>
 
-<PageContainer title="About" description="Learn more about me and my work">
-  <PageHead title="About" subtitle="Loke" />
+<PageContainer
+  title="About"
+  description="A little about who I am, what I’m interested in and what I’m working on."
+>
+  <PageHead title="About" subtitle="Ranveer Wilkhu" />
 
-  <div class="content-grid">
-    <div class="about-text" in:fade={{ duration: 300, delay: 300 }}>
+  <div class="about-grid">
+    <div class="about-text" in:fade={{ duration: 300, delay: 200 }}>
       <div class="prose prose-lg mobile-prose">
         <strong>
-          I've worked professionally with JavaScript for about {yearsOfWork} years now, across the full
-          stack with a focus on frontend development. I have worked with several projects for mobile but
-          mostly for the web in different sectors, primarily e-commerce.
+          I'm an Economics and Finance student at the University of Bristol, interested in
+          understanding how markets, technology and economic systems interact.
         </strong>
+
         <p>
-          Some of my go-to languages and tools for web development: React, React Native, Typescript,
-          Nextjs, Nodejs, Prisma, Postgres, Docker, SASS, Tailwind, Cypress.
+          A lot of what interests me comes back to systems: why they behave the way they do,
+          what happens when incentives change, and how data and modelling can help us understand
+          them better. That has naturally drawn me towards economics, financial markets,
+          technology and investing.
         </p>
+
         <p>
-          The Web today is mind blowing and I can't wait to see what the future hold for it, that's
-          why I want to be part of it, to make it the best it can be, even though it might be only a
-          tiny piece of the whole puzzle.
+          I also enjoy building things. One of my larger personal projects has been developing
+          an open-source astrophotography mount, combining electronics, mechanical design,
+          3D printing, software and a lot of trial and error.
+        </p>
+
+        <p>
+          This website is where I write about things I find interesting, document projects I'm
+          working on, and develop ideas as I learn more.
+        </p>
+
+        <p>
+          Outside economics and technology, I'm interested in photography and astrophotography,
+          squash, music and football.
         </p>
       </div>
     </div>
 
-    <div class="about-image-container">
-      <div class="image-card glass-card">
-        <div class="image-wrapper">
-          <picture>
-            <source srcSet="/images/loke_transparent_370.webp" type="image/webp" />
-            <source srcSet="/images/loke_transparent_370.png" type="image/png" />
-            <img
-              class="profile-image"
-              src="/images/loke_transparent_370.png"
-              alt="Loke"
-              width={370}
-              height={335}
-              loading="lazy"
-              decoding="async"
-            />
-          </picture>
-        </div>
+    <div class="about-details" in:fade={{ duration: 300, delay: 350 }}>
+      <div class="detail-card">
+        <span class="detail-label">Currently</span>
+        <p>Economics & Finance<br />University of Bristol</p>
+      </div>
+
+      <div class="detail-card">
+        <span class="detail-label">Interested in</span>
+        <p>
+          Economics<br />
+          Financial markets<br />
+          Technology & AI<br />
+          Investing<br />
+          Data & modelling
+        </p>
+      </div>
+
+      <div class="detail-card">
+        <span class="detail-label">Building</span>
+        <p>
+          Personal research projects, data analysis and an open-source astrophotography setup.
+        </p>
       </div>
     </div>
   </div>
 </PageContainer>
 
 <style>
-  .content-grid {
+  .about-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: center;
+    grid-template-columns: minmax(0, 1.6fr) minmax(240px, 0.8fr);
+    gap: 4rem;
+    align-items: start;
   }
 
   .about-text {
+    min-width: 0;
+  }
+
+  .about-details {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 1rem;
   }
 
-  .about-image-container {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    height: 335px;
-    width: 100%;
-    max-width: 370px;
-    margin: 0 auto;
+  .detail-card {
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(8px);
   }
 
-  .image-card {
-    position: relative;
-    width: 100%;
-    max-width: 370px;
-    height: 335px;
-    z-index: 2;
-    padding: 0;
+  .detail-label {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
   }
 
-  .image-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: inherit;
-  }
-
-  .profile-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    border-radius: inherit;
-  }
-
-  @media (max-width: 768px) {
-    .content-grid {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    .about-image-container {
-      order: -1;
-      margin-bottom: 2rem;
-      height: auto;
-      max-width: 100%;
-    }
-
-    .image-card {
-      height: auto;
-      aspect-ratio: 370/335;
-      max-width: 100%;
-    }
-
-    .profile-image {
-      object-fit: contain;
-    }
+  .detail-card p {
+    margin: 0;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.72);
   }
 
   .mobile-prose {
@@ -135,5 +125,12 @@
     max-width: 100%;
     overflow-wrap: break-word;
     word-wrap: break-word;
+  }
+
+  @media (max-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
   }
 </style>

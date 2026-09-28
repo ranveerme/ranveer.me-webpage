@@ -26,13 +26,19 @@
 </script>
 
 <svelte:head>
-  <meta name="og:title" content="SvelteKit MDSvex Blog Template" />
+  <meta property="og:title" content="Ranveer Wilkhu" />
   <meta
-    name="og:description"
-    content="A modern, fast, and SEO-friendly blog template built with SvelteKit, MDSvex, and TailwindCSS."
+    property="og:description"
+    content="Personal website and writing by Ranveer Wilkhu, covering economics, finance, technology, projects and ideas."
   />
+  <meta property="og:url" content="https://ranveer.me" />
+
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:creator" content="@your_twitter_handle" />
+  <meta name="twitter:title" content="Ranveer Wilkhu" />
+  <meta
+    name="twitter:description"
+    content="Personal website and writing by Ranveer Wilkhu, covering economics, finance, technology, projects and ideas."
+  />
 </svelte:head>
 
 <!-- Enable prefetching for the entire app -->

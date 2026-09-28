@@ -1,0 +1,17 @@
+---
+title: "Welcome to ranveer.me"
+description: "Why I built this site, what I plan to write about, and what I’m interested in exploring."
+date: 2026-09-28
+published: true
+tag: personal
+---
+
+# Welcome to ranveer.me
+
+This site is a place for me to write about things I find interesting, document projects I’m working on, and develop ideas as I learn more.
+
+A lot of what interests me sits somewhere between economics, finance and technology - particularly how systems behave, how incentives shape outcomes, and how new technologies change the way people and markets operate.
+
+I also want to use this space to document some of the things I build, from data projects to astrophotography and hardware.
+
+This is the first version of the site, so it will probably change a lot over time.

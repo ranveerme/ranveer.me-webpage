@@ -77,13 +77,13 @@
         <a
           href="/"
           class="focus:ring-primary focus:ring-offset-background relative flex items-center overflow-hidden rounded-md transition-transform duration-200 hover:-translate-y-0.5 focus:ring-2 focus:outline-none"
-          aria-label="SvelteKit.Blog Home"
+          aria-label="Ranveer Wilkhu Home"
           data-sveltekit-preload-data="hover"
           tabindex="0"
           aria-current={$page.url.pathname === "/" ? "page" : undefined}
         >
           <span class="relative z-10 font-sans text-2xl font-bold tracking-tight text-white"
-            >SvelteKit<span class="text-primary">.</span>Blog</span
+            >Ranveer<span class="text-primary">.</span>Wilkhu</span
           >
         </a>
       </div>
@@ -144,7 +144,7 @@
           </li>
           <li>
             <Link href="/journal" variant="nav" active={$page.url.pathname.includes("/journal")}>
-              Journal
+              Writing
             </Link>
           </li>
           <li>
@@ -174,10 +174,10 @@
                 class="focus:ring-primary focus:ring-offset-background inline-block rounded-md focus:ring-2 focus:ring-offset-2 focus:outline-none"
                 on:click={handleNavigation}
                 tabindex="0"
-                aria-label="SvelteKit.Blog Home"
+                aria-label="Ranveer Wilkhu Home"
               >
                 <span class="font-sans text-2xl font-bold tracking-tight text-white"
-                  >SvelteKit<span class="text-primary">.</span>Blog</span
+                  >Ranveer<span class="text-primary">.</span>Wilkhu</span
                 >
               </a>
             </div>
@@ -246,7 +246,7 @@
                     ? 'opacity-100'
                     : 'opacity-0'} transition-all duration-200"
                 ></span>
-                Journal
+                Writing
               </a>
               <a
                 href="/contact"

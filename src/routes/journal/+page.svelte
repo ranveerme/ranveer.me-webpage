@@ -14,37 +14,52 @@
 </script>
 
 <svelte:head>
-  <title>Journal - loke.dev</title>
-  <meta name="description" content="Some of my written down thought, guides and blog posts" />
-  <meta name="Cache-Control" content="max-age=1, stale-while-revalidate=59" />
+  <title>Writing | Ranveer Wilkhu</title>
+  <meta
+    name="description"
+    content="Writing by Ranveer Wilkhu on economics, finance, technology, markets, projects and ideas."
+  />
 </svelte:head>
 
 <PageContainer>
-  <PageHead title="Journal" subtitle="Let's learn together!" />
+  <PageHead title="Writing" subtitle="Notes, ideas and things I find interesting." />
 
-  <div class="mb-8">
-    <div class="flex flex-wrap items-center gap-3">
-      <span class="text-gray-400">Browse by topic:</span>
-      <Link href="/journal/tags" className="tag-pill">all topics</Link>
-      {#if topTags && topTags.length > 0}
-        {#each topTags as tag (tag.name)}
-          <Link href={`/journal/tags/${encodeURIComponent(tag.name)}`} className="tag-pill">
-            {tag.name.toLowerCase()}
-          </Link>
-        {/each}
-      {/if}
+  {#if posts.length > 0}
+    <div class="mb-8">
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="text-gray-400">Browse by topic:</span>
+
+        <Link href="/journal/tags" className="tag-pill">
+          all topics
+        </Link>
+
+        {#if topTags && topTags.length > 0}
+          {#each topTags as tag (tag.name)}
+            <Link
+              href={`/journal/tags/${encodeURIComponent(tag.name)}`}
+              className="tag-pill"
+            >
+              {tag.name.toLowerCase()}
+            </Link>
+          {/each}
+        {/if}
+      </div>
     </div>
-  </div>
 
-  <div class="content-grid">
-    {#if posts}
+    <div class="content-grid">
       {#each posts as post, i (post.slug)}
         <div class="content-item" style="--delay: {i * 0.05}s">
           <PostCard {post} />
         </div>
       {/each}
-    {/if}
-  </div>
+    </div>
+  {:else}
+    <div class="empty-state">
+      <p class="text-lg text-gray-300">
+        I’m working on my first posts. Check back soon.
+      </p>
+    </div>
+  {/if}
 </PageContainer>
 
 <style>
@@ -53,6 +68,14 @@
     grid-template-columns: 1fr;
     gap: 2rem;
     margin-top: 3rem;
+  }
+
+  .empty-state {
+    margin-top: 3rem;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
   }
 
   @media (min-width: 640px) {

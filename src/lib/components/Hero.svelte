@@ -20,7 +20,7 @@
 
   const particles: Particle[] = [
     {
-      content: "function()",
+      content: "markets",
       top: "8%",
       left: "13%",
       delay: "0s",
@@ -31,7 +31,7 @@
       spinAmount: "4deg",
     },
     {
-      content: "const",
+      content: "inflation",
       top: "3%",
       left: "32%",
       delay: "0s",
@@ -42,7 +42,7 @@
       spinAmount: "3deg",
     },
     {
-      content: "div",
+      content: "GDP",
       top: "18%",
       left: "42%",
       delay: "0s",
@@ -54,7 +54,7 @@
       spinAmount: "6deg",
     },
     {
-      content: "export",
+      content: "Python",
       top: "14%",
       left: "87%",
       delay: "0s",
@@ -66,7 +66,7 @@
     },
 
     {
-      content: "() =>",
+      content: "capital",
       top: "11%",
       left: "64%",
       delay: "0.5s",
@@ -77,7 +77,7 @@
       spinAmount: "7deg",
     },
     {
-      content: "return",
+      content: "risk",
       top: "27%",
       left: "6%",
       delay: "0.8s",
@@ -88,7 +88,7 @@
       spinAmount: "2deg",
     },
     {
-      content: "async",
+      content: "growth",
       top: "22%",
       left: "74%",
       delay: "1.2s",
@@ -100,7 +100,7 @@
     },
 
     {
-      content: "await",
+      content: "data",
       top: "42%",
       left: "17%",
       delay: "2s",
@@ -110,7 +110,7 @@
       spinAmount: "3deg",
     },
     {
-      content: ".then()",
+      content: "AI",
       top: "32%",
       left: "40%",
       delay: "2.5s",
@@ -120,7 +120,7 @@
       spinAmount: "5deg",
     },
     {
-      content: "useState()",
+      content: "policy",
       top: "38%",
       left: "80%",
       delay: "3s",
@@ -132,7 +132,7 @@
     },
 
     {
-      content: "import",
+      content: "finance",
       top: "55%",
       left: "25%",
       delay: "4s",
@@ -142,7 +142,7 @@
       spinAmount: "4deg",
     },
     {
-      content: "<Svelte>",
+      content: "systems",
       top: "58%",
       left: "70%",
       delay: "5s",
@@ -153,7 +153,7 @@
       spinAmount: "7deg",
     },
     {
-      content: "props",
+      content: "technology",
       top: "52%",
       left: "10%",
       delay: "6s",
@@ -165,7 +165,7 @@
     },
 
     {
-      content: "class",
+      content: "inequality",
       top: "15%",
       left: "50%",
       delay: "8s",
@@ -176,7 +176,7 @@
       spinAmount: "5deg",
     },
     {
-      content: "extends",
+      content: "incentives",
       top: "48%",
       left: "55%",
       delay: "10s",
@@ -187,7 +187,7 @@
       spinAmount: "4deg",
     },
     {
-      content: "let",
+      content: "automation",
       top: "35%",
       left: "85%",
       delay: "12s",
@@ -198,7 +198,7 @@
       spinAmount: "2deg",
     },
     {
-      content: "export default",
+      content: "trade",
       top: "65%",
       left: "45%",
       delay: "14s",
@@ -210,7 +210,7 @@
     },
 
     {
-      content: "interface",
+      content: "liquidity",
       top: "72%",
       left: "28%",
       delay: "7s",
@@ -221,7 +221,7 @@
       spinAmount: "5deg",
     },
     {
-      content: "type",
+      content: "volatility",
       top: "78%",
       left: "65%",
       delay: "9s",
@@ -232,7 +232,7 @@
       spinAmount: "3deg",
     },
     {
-      content: "npm",
+      content: "forecasting",
       top: "85%",
       left: "15%",
       delay: "11s",
@@ -287,17 +287,17 @@
     <h1
       class="mb-4 text-6xl leading-none font-extrabold tracking-tight text-white text-shadow-lg md:text-8xl"
     >
-      SvelteKit<span class="text-primary">.</span>Blog
+      Ranveer<span class="text-primary">.</span>Wilkhu
     </h1>
     <p class="mb-12 text-2xl tracking-wide text-white/80 text-shadow-md md:text-4xl">
-      Modern Blog Template
+      Economics, Finance, Technology & Ideas
     </p>
     <div class="mt-4 flex flex-col justify-center gap-6 md:flex-row md:items-center md:gap-6">
       <Button
         href="/journal"
         variant="primary"
         className="px-10 py-3 text-base font-medium shadow-lg shadow-primary/30 w-full md:w-auto md:text-lg"
-        >Read Blog</Button
+        >Read My Writing</Button
       >
       <Button
         href="/about"

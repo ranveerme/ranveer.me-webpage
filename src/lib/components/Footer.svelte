@@ -14,39 +14,42 @@
     <div class="mb-10 grid w-full grid-cols-1 gap-12 md:grid-cols-3 md:justify-between">
       <div class="animate-fadeIn relative">
         <h2 class="mb-4 text-xl font-bold text-white">
-          <span>SvelteKit</span><span class="text-primary">.</span><span>Blog</span>
+          <span>Ranveer</span><span class="text-primary">.</span><span>Wilkhu</span>
         </h2>
+
         <p class="mb-4 text-gray-300">
-          A modern, fast, and SEO-friendly blog template built with SvelteKit, MDSvex, and
-          TailwindCSS.
+          Writing about economics, finance, technology, projects and ideas.
         </p>
+
         <p class="text-sm text-gray-400">
-          © {new Date().getFullYear()} Loke. All rights reserved.
+          © {new Date().getFullYear()} Ranveer Wilkhu. All rights reserved.
         </p>
       </div>
 
       <div class="animate-fadeIn relative md:text-center">
         <h2 class="mb-4 text-xl font-bold text-white">Navigation</h2>
+
         <ul class="space-y-2">
           <li><Link href="/" variant="footer">Home</Link></li>
           <li><Link href="/about" variant="footer">About</Link></li>
-          <li><Link href="/journal" variant="footer">Journal</Link></li>
+          <li><Link href="/journal" variant="footer">Writing</Link></li>
           <li><Link href="/contact" variant="footer">Contact</Link></li>
         </ul>
       </div>
 
       <div class="animate-fadeIn relative md:text-right">
         <h2 class="mb-4 text-xl font-bold text-white">Connect</h2>
+
         <ul class="space-y-2">
           <li>
             <Link
-              href="https://github.com/yourusername"
+              href="https://github.com/ranveerme"
               variant="footer"
               external={true}
-              className="flex items-center group md:justify-end"
+              className="inline-flex items-center gap-2 group"
             >
               <svg
-                class="mr-2 h-5 w-5 transition-transform duration-200 group-hover:scale-110"
+                class="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110"
                 fill="currentColor"
                 viewBox="0 0 24 24"
                 aria-hidden="true"
@@ -57,37 +60,19 @@
                   clip-rule="evenodd"
                 ></path>
               </svg>
+
               GitHub
             </Link>
           </li>
+
           <li>
             <Link
-              href="https://twitter.com/yourusername"
+              href="mailto:singh@ranveer.me"
               variant="footer"
-              external={true}
-              className="flex items-center group md:justify-end"
+              className="inline-flex items-center gap-2 group"
             >
               <svg
-                class="mr-2 h-5 w-5 transition-transform duration-200 group-hover:scale-110"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
-                ></path>
-              </svg>
-              Twitter
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="mailto:your.email@example.com"
-              variant="footer"
-              className="flex items-center group md:justify-end"
-            >
-              <svg
-                class="mr-2 h-5 w-5 transition-transform duration-200 group-hover:scale-110"
+                class="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -97,9 +82,10 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v10a2 2 0 002 2z"
                 ></path>
               </svg>
+
               Email
             </Link>
           </li>
@@ -109,10 +95,14 @@
 
     <div class="mt-8 text-center text-sm text-gray-400">
       <p>
-        Built with <Link href="https://kit.svelte.dev" variant="tech" external={true}
-          >SvelteKit</Link
-        > and <Link href="https://tailwindcss.com" variant="tech" external={true}>Tailwind CSS</Link
-        >
+        Built with
+        <Link href="https://kit.svelte.dev" variant="tech" external={true}>
+          SvelteKit
+        </Link>
+        and
+        <Link href="https://tailwindcss.com" variant="tech" external={true}>
+          Tailwind CSS
+        </Link>
       </p>
     </div>
   </div>
