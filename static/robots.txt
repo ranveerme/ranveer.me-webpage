@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://loke.dev/sitemap.xml
+Sitemap: https://ranveer.me/sitemap.xml

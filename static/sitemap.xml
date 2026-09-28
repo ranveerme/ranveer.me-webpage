@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://loke.dev/</loc>
+    <loc>https://ranveer.me/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+
   <url>
-    <loc>https://loke.dev/about</loc>
+    <loc>https://ranveer.me/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
   <url>
-    <loc>https://loke.dev/journal</loc>
+    <loc>https://ranveer.me/journal</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
+
   <url>
-    <loc>https://loke.dev/contact</loc>
+    <loc>https://ranveer.me/journal/tags</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://ranveer.me/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://ranveer.me/journal/welcome-to-ranveer-me</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
