@@ -1,377 +1,223 @@
 ---
-title: "Building OpenAstroExplorer: Learning to Debug a System, Not Just a Part"
-description: "What building an open-source astrophotography mount taught me about electronics, mechanical tolerances, software integration and solving problems I didn't yet understand."
+title: "Building OpenAstroExplorer: Learning to Understand the System"
+description: "A reflection on building an open-source astrophotography mount, the problems I encountered, and what the process taught me about engineering, systems and problem-solving."
 date: 2026-09-10
 published: true
 tag: projects
 ---
 
-# Building OpenAstroExplorer: Learning to Debug a System, Not Just a Part
+# Building OpenAstroExplorer: Learning to Understand the System
 
-Over the last few months, one of the most challenging things I have worked on has been building an OpenAstroExplorer: an open-source, motorised astrophotography mount capable of tracking the night sky and automatically pointing a camera towards astronomical targets.
+I have always found astrophotography fascinating because of the contrast between the simplicity of the final image and the complexity required to produce it. A photograph of a galaxy or nebula may appear almost effortless once processed, yet behind it sits a system of optics, mechanical tracking, electronics, software and mathematics, all of which have to work together with a surprising degree of precision.
 
-I originally started it because I enjoy astrophotography and wanted to understand more of what was happening between pressing “GoTo” on a screen and a mount actually moving towards an object in the sky.
+That complexity is what drew me towards building an OpenAstroExplorer.
 
-I expected to learn a bit about electronics and 3D printing.
+OpenAstroExplorer is an open-source GoTo equatorial mount: a motorised system designed to compensate for the Earth's rotation, track astronomical objects and automatically slew a camera towards coordinates in the night sky. I initially approached the project as a way of improving my astrophotography setup whilst making use of components I already had from an old 3D printer. In reality, it became much broader than that. Building it forced me into areas of electronics, mechanical design and software that I had little experience with, and exposed the difference between assembling individual components and actually understanding the system they form.
 
-Instead, the project became a crash course in electronics, mechanical design, embedded systems, networking, astronomical software, debugging and, perhaps most importantly, learning how to work through problems when I had no idea what the answer was supposed to be.
+The project was often frustrating. Motors refused to move, drivers became unexpectedly hot, mechanical components developed backlash, computers refused to boot and software occasionally appeared to have a completely different understanding of where the telescope was pointing than I did.
 
-Very little worked perfectly the first time.
+In hindsight, those problems were the most valuable part of the build.
 
-That ended up being the most useful part.
+## Building the hardware
 
-## Starting with what I already had
+Much of the hardware was adapted from components I either already owned or could source relatively cheaply. The controller was an MKS Gen L v2.1, originally designed for 3D-printer applications, whilst the mount itself combined 3D-printed parts with aluminium extrusion, shafts, gears and stepper motors.
 
-One thing I liked about OpenAstroExplorer was that it did not require starting with a completely polished set of components.
+The two principal axes of an equatorial mount are right ascension and declination. For these I used NEMA 17 motors, controlled through TMC2209 stepper drivers. The altitude and azimuth adjustment mechanisms used smaller modified 28BYJ-48 motors with A4988 drivers.
 
-I had parts available from an old Geeetech i3 Pro B 3D printer, along with stepper motors, a Raspberry Pi 3B, a Jetson Nano and access to a 3D printer.
+Individually, none of these components is especially unusual. The difficulty emerged from their interaction.
 
-The control board I used was an MKS Gen L v2.1.
+Different motors required different current settings; the drivers had different configuration requirements; the physical board I owned did not always correspond perfectly with the diagrams I was using; and small mechanical imperfections that appeared insignificant in isolation became far more important once translated through a gear train.
 
-For the main right ascension and declination axes, I used NEMA 17 stepper motors driven by TMC2209 drivers. The altitude and azimuth adjustment motors used modified bipolar 28BYJ-48 motors with A4988 drivers.
+This was probably the first point at which the project changed the way I approached technical problems. Initially, when something failed, I tended to regard the system as a whole: *the motor is not moving, therefore something about the mount is broken*. That description was technically true, but almost useless.
 
-On paper, that sounds fairly straightforward.
+I gradually learnt to decompose the problem.
 
-In reality, combining components that were never originally designed as one system created a long list of small incompatibilities.
+Was the controller sending the command? Was the driver responding? Was the motor receiving sufficient current? Were the coil pairs wired correctly? Could the motor rotate without the mechanical load attached?
 
-Pin layouts differed. Driver configurations differed. Motors behaved differently. Mechanical tolerances mattered more than I expected.
+The more specific the question became, the easier it was to answer.
 
-It quickly stopped being a case of following instructions and became a case of understanding why the instructions worked.
+## When a motor makes noise but does not move
 
-## The first lesson: a motor making noise does not mean the motor is working
+One of my earliest recurring problems involved motors which appeared to be doing something, but not actually rotating. They would whirr, jerk slightly or hold position without producing meaningful motion.
 
-Some of the earliest problems were with the stepper motors.
+There were several plausible explanations, which initially made the fault difficult to isolate. A stepper motor can display similar behaviour if its phases are wired incorrectly, if the current supplied by the driver is inadequate, if the firmware configuration is wrong, or if the mechanical resistance exceeds the available torque.
 
-At one point, the motors would whirr, vibrate or make small movements without actually rotating properly.
+At one stage, the declination motor produced little more than small movements despite apparently receiving commands correctly. Rather than continuing to change settings at random, I traced the motor coils and reconsidered the wiring order. The issue ultimately came down to the arrangement of the coil pairs. Once these were wired correctly, the motor developed proper holding torque and began moving as expected.
 
-Initially, that made me question almost everything at once.
+The solution itself was not sophisticated. The process of finding it was more important.
 
-Was the firmware wrong?
+I had been inclined to assume that a complicated-looking failure required an equally complicated explanation. In reality, a single wiring error was enough to undermine the entire axis. That experience became a recurring theme throughout the project: complexity in the system does not necessarily imply complexity in the root cause.
 
-Was the driver faulty?
+## Moving from adjustment to measurement
 
-Was the current too low?
+Current calibration raised a similar issue.
 
-Was the motor wired incorrectly?
+The A4988 drivers used for the altitude and azimuth motors required their current limits to be set manually through the driver's reference voltage, or Vref. Before I had a multimeter available, adjustment was necessarily imprecise; I could alter the potentiometer and observe whether the motor behaved differently, but I had no meaningful way of quantifying what I had changed.
 
-That is where I started learning one of the most important lessons from the whole project: **change one variable at a time**.
+Once I began measuring Vref properly, the process became much more systematic. Through testing, I found the lowest values at which each motor operated reliably, eventually settling at approximately **0.136 V for azimuth** and **0.150 V for altitude**.
 
-With several possible causes producing almost identical symptoms, changing three things at once might accidentally fix the problem, but I would have learned almost nothing about why.
+The numbers themselves are relatively unimportant. What mattered was the transition from qualitative trial-and-error towards controlled testing.
 
-So I started breaking the system down.
+Instead of altering a setting until the system appeared to work, I could change one variable, measure it, observe the consequence and compare the result. It is an elementary experimental principle, but applying it to something I had physically built made its value much clearer than it had ever appeared in theory.
 
-I identified the motor coil pairs, checked the wiring order and tested the motors independently.
+The TMC2209 drivers created their own questions. Both drivers became surprisingly hot, including periods when the motors were not actively slewing. This forced me to investigate current configuration, idle behaviour, cooling and the UART communication used to configure the drivers through software. At several points, the hardware layout also differed from what I expected from reference diagrams, meaning that blindly following a pinout would have been a poor substitute for understanding the board in front of me.
 
-One declination motor problem eventually came down to the wiring sequence. Once the coil pairs were connected correctly, the motor suddenly had proper holding torque and began moving normally.
+I became considerably less willing to assume that something was correct simply because two components looked similar.
 
-The fix itself was simple.
+## The mechanical problem that took the longest to understand
 
-Finding it was not.
+The most persistent problem was not electronic at all.
 
-The useful part was realising that debugging becomes far easier when a large system is reduced into smaller questions that can actually be tested.
+The declination mechanism developed significant backlash when changing direction. I could rotate the input by several millimetres before the worm wheel began responding, creating exactly the kind of lost motion that is undesirable in an astrophotography mount where small angular errors matter.
 
-## Learning what Vref actually meant
+My immediate assumption was that the worm and worm wheel were badly meshed.
 
-The A4988 drivers introduced another problem: motor current.
+This appeared reasonable. Moving the components closer reduced some of the backlash; moving them further apart increased it. However, attempts to correct the mesh created other problems. In some positions the assembly rotated freely, whilst in others the brass wheel began contacting the housing. Removing the cover could make the system noticeably smoother, only for the resistance to return once everything was assembled again.
 
-Initially, I was adjusting things based largely on whether the motor appeared to move.
+For a while, I concentrated almost entirely on alignment.
 
-That works up to a point, but it is not a particularly good engineering method.
+The breakthrough came from noticing that the resistance varied depending on the rotational position of the worm wheel. A purely fixed alignment problem should not have changed so significantly as the wheel rotated, which suggested that the wheel itself was not remaining concentric.
 
-Once I had a multimeter, I started measuring the driver's reference voltage and finding the lowest reliable values experimentally.
+The reason was surprisingly simple: the brass worm wheel had a **6 mm bore mounted onto a 5 mm steel shaft**.
 
-For the two small 28BYJ-48 motors, I eventually found reliable operating points of roughly **0.136 V for azimuth** and **0.150 V for altitude**.
+It was secured using a single grub screw. Tightening the screw therefore did not centre the shaft inside the bore; it pushed the shaft against one side. The wheel was consequently mounted slightly eccentrically. Depending on its orientation, one side could sit acceptably whilst the opposite side moved far enough to interfere with the surrounding housing.
 
-That was a small part of the project, but it changed how I approached the electronics.
+The fault had presented itself as a problem between the worm and wheel, yet its origin was the dimensional relationship between the wheel and shaft.
 
-Instead of:
+That distinction became one of the most useful lessons I took from the entire build. The point at which a system displays an error is not necessarily the point at which that error originates. Mechanical systems transmit imperfections, just as software systems propagate incorrect inputs. Fixating on the visible symptom can therefore obscure the underlying cause.
 
-> turn something until it works
+I had encountered the problem as backlash. What I eventually had to understand was eccentricity.
 
-the process became:
+## 3D printing made tolerances real
 
-> measure it, change it deliberately, observe the result and record what happened.
+Before this project, I largely understood tolerances as an abstract engineering consideration. OpenAstroExplorer made them physical.
 
-That sounds obvious, but there is a big difference between understanding that principle theoretically and being forced to use it because a real piece of hardware refuses to cooperate.
+The mount combines printed plastic parts with manufactured shafts, bearings, fasteners and aluminium extrusion. A fraction of a millimetre that appears negligible on a computer screen can become significant when two parts are expected to rotate concentrically or hold a gear in precise alignment.
 
-## When the obvious problem is not the actual problem
+Even preparing the aluminium extrusion introduced practical challenges. Sections had to be cut, holes drilled and threads tapped for M5 bolts. A slightly uneven cut might be irrelevant in one location but problematic in another. A bolt passing through a hole with some clearance could appear perfectly acceptable until the assembly depended on that part for alignment.
 
-The most frustrating mechanical issue came from the declination gearbox.
+The broader lesson was that manufacturing error cannot simply be separated from design. The physical version of a model inevitably contains tolerances, and a good design needs to accommodate them rather than assume perfect geometry.
 
-There was noticeable backlash when reversing direction. I could turn the mechanism by several millimetres before the output actually started responding.
+That is an idea I understood far better after repeatedly assembling and disassembling the same mechanism trying to work out why something that looked aligned was not behaving as though it was.
 
-At first, I focused on the worm and worm wheel.
+## Choosing reliability over specification
 
-That seemed logical. If there is backlash in a worm gear, the mesh between those two components must be the problem.
+The computer controlling the mount provided a different type of lesson.
 
-I spent a lot of time adjusting alignment.
+I initially experimented with a Jetson Nano. On paper, it was the more capable computer and therefore seemed like the obvious choice. In practice, I repeatedly encountered boot and display problems which consumed time without bringing the mount any closer to working.
 
-Move the wheel one way and the mesh improved, but another component started rubbing.
+Eventually, I abandoned that approach and used a spare Raspberry Pi 3B.
 
-Move it back and it turned more freely, but the backlash became worse.
+It was older and considerably less impressive in terms of raw specification, but it booted reliably and performed the task I actually required from it. I installed a lightweight Linux environment, configured the necessary astronomy software and eventually had it operating consistently as the mount computer.
 
-With the housing installed, the brass wheel could also begin touching the top or bottom of the enclosure depending on its rotational position.
+It was a useful correction to my tendency to equate greater capability with a better solution. Engineering is ultimately constrained by purpose. The more powerful component is irrelevant if the simpler one fulfils the requirement more reliably.
 
-That last detail was important.
+## Connecting the mount to the rest of the system
 
-If the problem changed depending on where the wheel was in its rotation, then this probably was not just a fixed alignment problem.
+Once the electronics and mechanics were functioning sufficiently well, the project moved from hardware into software.
 
-Eventually I realised that the brass worm wheel had a **6 mm bore sitting on a 5 mm shaft**.
+The Raspberry Pi runs an **INDI server**, which provides a standard interface between astronomical hardware and control software. My Mac then runs **KStars and Ekos** as the client, communicating with the Pi across the local network.
 
-The wheel was secured using a single grub screw.
-
-Tightening that screw pulled the shaft against one side of the oversized bore rather than centring it. The result was a slightly eccentric wheel.
-
-So when the grub screw side faced the worm, the mechanism could turn reasonably well.
-
-Rotate it around, and the opposite side of the wheel shifted enough to start rubbing against the housing.
-
-What looked like a worm alignment problem was actually being caused somewhere else in the assembly.
-
-That was probably the clearest example of something this project repeatedly taught me:
-
-**the component showing the symptom is not necessarily the component causing the problem.**
-
-I have started thinking about technical problems much more in terms of systems because of that.
-
-## The electronics had their own personality
-
-The stepper drivers were another reminder that “working” and “working properly” are not the same thing.
-
-The TMC2209 drivers controlling the main axes became surprisingly hot, even when the motors were not actively slewing.
-
-That forced me to think about current configuration, idle behaviour, cooling and whether the firmware was configuring the drivers in the way I expected.
-
-At another point, I had to deal with the UART configuration for the drivers, including hardware that did not perfectly match the pin arrangement I expected from documentation.
-
-There were traces, jumper configurations, driver orientation and wiring details that suddenly mattered.
-
-I became much more cautious about assuming that two boards which look similar are electrically identical.
-
-That is another lesson that seems trivial until you nearly configure hardware based on the wrong pinout.
-
-## Choosing what works rather than what sounds better
-
-I also experimented with using a Jetson Nano as the computer controlling the mount.
-
-On paper, the Jetson sounded attractive because it is considerably more powerful than an older Raspberry Pi.
-
-In practice, I repeatedly ran into boot and display problems.
-
-Eventually I stopped fighting it and used the Raspberry Pi 3B instead.
-
-The Pi booted reliably, ran the software I actually needed and became the mount computer.
-
-That was a useful reminder that the technically more impressive option is not automatically the better engineering choice.
-
-The best component is often the one that does the required job reliably.
-
-## Turning hardware into a networked system
-
-Once the motors were moving, the next stage was making the mount usable from my Mac.
-
-The Raspberry Pi runs an **INDI server**, which exposes the astronomy hardware over the network.
-
-My Mac runs **KStars and Ekos**, which act as the client.
-
-That means the architecture effectively became:
+The architecture therefore became something closer to this:
 
 ```text
-Nikon D7200
-      ↓
-Raspberry Pi 3B
-      ↓
-INDI
-      ↓
-Local network
-      ↓
-KStars / Ekos on my Mac
-      ↓
-Mount control, imaging and plate solving
+Mount motors / controller
+          ↓
+    Raspberry Pi 3B
+          ↓
+        INDI
+          ↓
+    Local network
+          ↓
+    KStars / Ekos
+          ↓
+Nikon D7200 + mount control
 ```
 
-Getting that working was one of the most satisfying stages of the project.
+This was the point at which the collection of individual components began to behave like an actual astrophotography system.
 
-Suddenly the motors I had been testing using individual commands became part of a proper astronomy control system.
+The camera could be connected, exposures could be initiated from the computer and the mount could receive astronomical coordinates rather than simple motor commands. Until then, much of my testing had consisted of establishing whether a particular axis could move by issuing direct commands. Through KStars and Ekos, those movements became part of a larger coordinate model of the sky.
 
-I could connect the Nikon D7200, capture exposures and control the mount from the same interface.
+This introduced another difficulty: a GoTo mount has to know considerably more than how many steps a motor has taken.
 
-But, unsurprisingly, that introduced a completely new category of problems.
+It needs a reliable understanding of time, geographic location, its initial mechanical orientation and the relationship between those variables and celestial coordinates. Errors in any of these inputs can produce movements that are mechanically correct but astronomically meaningless.
 
-## Coordinates matter more than I expected
+I encountered problems with time and location configuration, home position and the physical interpretation of where the declination axis should face. These were not failures of the motors or electronics; the system was doing what it had been told. The problem was that the information it had been given did not accurately describe reality.
 
-An astronomical mount is not simply being told:
+Again, the visible behaviour was downstream of the actual error.
 
-> rotate this motor 30 degrees.
+## Plate solving and closing the gap between model and reality
 
-It needs to understand where it is on Earth, what time it is, where its axes are currently pointing and how those coordinates correspond to the sky.
+Plate solving was probably the part of the software stack I found most interesting.
 
-Small configuration errors therefore produced very confusing behaviour.
+An astronomical mount maintains an internal model of where it believes it is pointing. However, the real mechanical system contains backlash, alignment error and manufacturing tolerances, so calculated position and actual position will never correspond perfectly.
 
-I had problems with location and time settings. I had to think properly about the mount's home position and which physical direction each axis should face.
+Plate solving provides an independent observation.
 
-Even something as simple as “point the mount north” required understanding what part of the mechanical assembly should actually be facing north.
+An image is captured through the camera and analysed against a catalogue of known stars. By identifying the geometry of the star field, the software can determine the actual coordinates represented by the image. I installed ASTAP and the relevant local star databases so that this process could be performed within Ekos.
 
-Eventually I standardised the home position so that the mount started from a predictable orientation.
-
-Once that happened, GoTo commands started making much more sense.
-
-Again, the lesson was not particularly glamorous:
-
-**a complex system needs good initial conditions.**
-
-If the system's understanding of where it starts is wrong, everything calculated from that starting point can also be wrong.
-
-## Plate solving was the moment it all started making sense
-
-One of the parts I had been most interested in from the beginning was plate solving.
-
-A mount can calculate where it believes it is pointing based on its motors and internal coordinate model.
-
-But mechanical systems are imperfect.
-
-There is backlash. There are small alignment errors. Motors and gearboxes have tolerances.
-
-Plate solving provides another source of information.
-
-The camera takes a photograph of the sky. Software analyses the pattern of stars in that image and compares it with a catalogue. From that pattern, it can determine the actual coordinates of the camera.
-
-The system can then compare:
+Conceptually, the system is comparing two states:
 
 ```text
-where the mount thinks it is pointing
+Where the mount calculates it is pointing
 
-vs.
+               vs.
 
-where the camera is actually pointing
+Where the image demonstrates it is actually pointing
 ```
 
-and correct the difference.
+The error between them can then be used to correct the mount.
 
-I installed ASTAP and the required star databases locally so that Ekos could perform that process.
+I found this particularly interesting because it transformed the mount from an essentially open-loop mechanical system into something capable of checking its own assumptions against external information. Rather than trusting the model blindly, the software observes reality and uses the discrepancy to improve the result.
 
-The first time I understood what the software was really doing, I found the idea much more interesting than simply having an automatic telescope mount.
+That principle extends far beyond astronomy. Models are useful precisely because they simplify reality, but their usefulness depends on continuously testing whether their assumptions remain consistent with what can actually be observed.
 
-It is effectively a feedback system.
+## Working around the real world
 
-You have a model, you observe reality, measure the error and feed that information back into the system.
+Of course, the physical environment imposed constraints of its own.
 
-That idea appears everywhere, from engineering to economics.
+My garden does not provide an unobstructed 360-degree horizon; the house blocks a substantial part of the sky behind the mount. Some procedures described neatly in documentation therefore become considerably less neat when attempted in a real garden.
 
-## Polar alignment was another reality check
+Polar alignment was one example.
 
-There was also a very practical limitation: my garden does not have an unobstructed 360-degree view of the sky.
+Ekos can perform a computer-assisted polar-alignment routine by capturing and plate solving several images whilst the mount rotates through part of the right-ascension axis. During my first attempts, the system seemed to take image after image and progress far more slowly than I expected.
 
-My house blocks a large section behind me.
+My initial reaction was to assume that it had failed.
 
-That meant some of the textbook setup procedures were not quite as convenient as they would be from an open field.
+Understanding what it was attempting to calculate made the behaviour more comprehensible. Each image formed part of the geometric information needed to estimate the mount's rotational axis relative to the celestial pole. What initially looked like the software doing very little was, in reality, a process I simply had not understood.
 
-I experimented with the Ekos polar-alignment routine, which takes repeated images while rotating the mount and plate solving each frame.
+This happened repeatedly throughout OpenAstroExplorer. The point at which I became less frustrated with a problem was normally the point at which I stopped asking *why is this not working?* and began asking *what is the system actually trying to do?*
 
-At one point it seemed to be taking image after image after image.
+The distinction sounds minor, but it changed the direction of my debugging.
 
-I initially assumed something had gone wrong.
+## What the project actually taught me
 
-In reality, watching the process forced me to understand what the software was trying to calculate instead of treating the interface like a black box.
+It would be easy to describe this project by listing the technologies involved: stepper motors, TMC2209s, A4988s, UART, Raspberry Pi, INDI, KStars, Ekos, ASTAP, 3D printing and custom firmware.
 
-It also reminded me that real-world constraints matter.
+I did learn about all of them.
 
-A solution that works perfectly in documentation may need adapting when the mount is sitting in an actual garden with a house, trees and a limited horizon around it.
+However, I do not think that list captures what I gained from the project.
 
-## The mechanical side taught me the value of tolerances
+The more important development was in how I approached unfamiliar problems.
 
-3D printing also turned out to be much more than pressing “print”.
+At the beginning, a malfunctioning mount felt like one enormous problem. By the end, I had become much more comfortable separating it into layers: electronics, firmware, networking, coordinate configuration, mechanical alignment and software. I learnt to establish what I knew was working before investigating what was not; to alter one variable rather than several; to measure where measurement was possible; and, perhaps most importantly, to question the assumptions that appeared too obvious to question.
 
-Parts needed to fit shafts, bearings, aluminium extrusion, screws and other printed components.
+Some of the hardest problems were ultimately caused by the smallest details. A motor's wires were in the wrong sequence. A connector was not properly seated. A reference voltage was too low. A 5 mm shaft was sitting inside a 6 mm bore. A more powerful computer was simply less useful than an older Raspberry Pi that worked reliably.
 
-A difference that looks tiny on a CAD model can matter a lot once two real components need to rotate concentrically.
+None of these discoveries required particularly advanced engineering knowledge. They required persistence, a willingness to revisit assumptions and enough humility to accept that the problem could be something basic that I had overlooked.
 
-Even the aluminium extrusion introduced lessons.
+That is probably the part of the project I value most.
 
-Cuts were not always perfectly square. Holes needed tapping. M5 bolts needed the correct drilled dimensions. Components that seemed securely aligned visually could still introduce enough error to affect the drivetrain.
+I am not an electrical engineer, a mechanical engineer or an astronomer, and the project certainly did not turn me into one. There is still a great deal about the mount, and about astrophotography more broadly, that I do not understand.
 
-Before the project, I thought about tolerances mostly as manufacturing details.
+What changed was my reaction to that lack of understanding.
 
-Now I understand them much more as part of the design itself.
+Entering an unfamiliar technical area now feels less like evidence that I am unqualified to solve the problem and more like the beginning of the process required to solve it. Documentation can be read, systems can be decomposed, measurements can be taken and assumptions can be tested.
 
-## What I learned
+For me, OpenAstroExplorer ultimately became less about constructing a mount and more about learning how to investigate a complex system.
 
-The biggest thing OpenAstroExplorer taught me was not astronomy.
+The final objective is still astrophotography. I want to refine the mechanics further, improve the software configuration and eventually use the mount to produce images that justify the time I have spent building it.
 
-It was how to approach a system I did not yet understand.
+Yet the most valuable outcome has already occurred.
 
-When I started, I knew relatively little about stepper drivers, UART communication, INDI, plate solving, worm gears or motor current calibration.
-
-There were plenty of points where I had no idea why something was happening.
-
-Over time, I became more comfortable with that.
-
-Instead of:
-
-> I don't know what's wrong.
-
-I started asking:
-
-> What do I know is working?
-
-> What is the smallest part of the system I can test?
-
-> What changed immediately before the problem appeared?
-
-> What assumption am I currently making that might be wrong?
-
-> Can I measure this instead of guessing?
-
-That change in approach was probably worth more than the mount itself.
-
-## I also learned not to confuse complexity with understanding
-
-It is easy to make a project sound impressive by listing technologies.
-
-TMC2209s, INDI, Ekos, ASTAP, Raspberry Pis, stepper motors and custom firmware certainly make for a decent list.
-
-But the times I learned the most were usually when something very basic was wrong.
-
-A wire was in the wrong order.
-
-A connector was loose.
-
-A current setting was too low.
-
-A shaft was one millimetre smaller than the bore around it.
-
-The computer I originally wanted to use simply was not as reliable as the older one sitting next to it.
-
-Those experiences made me appreciate that good problem solving is often less about finding an advanced solution and more about refusing to overlook simple explanations.
-
-## Building gave me a different kind of confidence
-
-I am not an electrical engineer.
-
-I am not a mechanical engineer.
-
-I am not an astronomer.
-
-That is part of why I wanted to do the project.
-
-It forced me to repeatedly enter areas where I did not already know the terminology, let alone the answer.
-
-The confidence I gained from it therefore was not:
-
-> I now know how to solve every problem like this.
-
-It was closer to:
-
-> I know that I can probably work it out.
-
-There is a big difference.
-
-The project is still something I want to keep improving. There are mechanical refinements I can make, software I can understand better and eventually much better astrophotography I want to produce with it.
-
-But the most valuable result so far is not a photograph.
-
-It is the process I went through to get the system working at all.
-
-Building OpenAstroExplorer taught me that complicated systems become much less intimidating once they are broken into parts, measured carefully and understood one failure at a time.
-
-And perhaps more importantly, it taught me that not knowing how something works is a perfectly good place to start.
+The project taught me that understanding rarely arrives all at once. More often, it develops through a succession of small failures, each removing one incorrect assumption until the system begins to make sense.
