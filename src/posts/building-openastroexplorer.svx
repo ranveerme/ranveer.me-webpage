@@ -16,7 +16,7 @@ OpenAstroExplorer is an open-source GoTo equatorial mount: a motorised system de
 
 The project was often frustrating. Motors refused to move, drivers became unexpectedly hot, mechanical components developed backlash, computers refused to boot and software occasionally appeared to have a completely different understanding of where the telescope was pointing than I did.
 
-In hindsight, those problems were the most valuable part of the build.
+Very little worked perfectly the first time, and most of the useful learning came from understanding why.
 
 ## Building the hardware
 
@@ -44,7 +44,11 @@ There were several plausible explanations, which initially made the fault diffic
 
 At one stage, the declination motor produced little more than small movements despite apparently receiving commands correctly. Rather than continuing to change settings at random, I traced the motor coils and reconsidered the wiring order. The issue ultimately came down to the arrangement of the coil pairs. Once these were wired correctly, the motor developed proper holding torque and began moving as expected.
 
-The solution itself was not sophisticated. The process of finding it was more important.
+The solution itself was simple.
+
+Finding it was not.
+
+The useful part was realising that debugging becomes far easier when a large system is reduced into smaller questions that can actually be tested.
 
 I had been inclined to assume that a complicated-looking failure required an equally complicated explanation. In reality, a single wiring error was enough to undermine the entire axis. That experience became a recurring theme throughout the project: complexity in the system does not necessarily imply complexity in the root cause.
 
@@ -58,7 +62,7 @@ Once I began measuring Vref properly, the process became much more systematic. T
 
 The numbers themselves are relatively unimportant. What mattered was the transition from qualitative trial-and-error towards controlled testing.
 
-Instead of altering a setting until the system appeared to work, I could change one variable, measure it, observe the consequence and compare the result. It is an elementary experimental principle, but applying it to something I had physically built made its value much clearer than it had ever appeared in theory.
+Instead of altering a setting until the system appeared to work, I could change one variable, measure it, observe the consequence and compare the result. It is an elementary experimental principle, but applying it to something I had physically built made its value much clearer than it had appeared in theory.
 
 The TMC2209 drivers created their own questions. Both drivers became surprisingly hot, including periods when the motors were not actively slewing. This forced me to investigate current configuration, idle behaviour, cooling and the UART communication used to configure the drivers through software. At several points, the hardware layout also differed from what I expected from reference diagrams, meaning that blindly following a pinout would have been a poor substitute for understanding the board in front of me.
 
@@ -76,7 +80,7 @@ This appeared reasonable. Moving the components closer reduced some of the backl
 
 For a while, I concentrated almost entirely on alignment.
 
-The breakthrough came from noticing that the resistance varied depending on the rotational position of the worm wheel. A purely fixed alignment problem should not have changed so significantly as the wheel rotated, which suggested that the wheel itself was not remaining concentric.
+The useful clue came from noticing that the resistance varied depending on the rotational position of the worm wheel. A purely fixed alignment problem should not have changed so significantly as the wheel rotated, which suggested that the wheel itself was not remaining concentric.
 
 The reason was surprisingly simple: the brass worm wheel had a **6 mm bore mounted onto a 5 mm steel shaft**.
 
@@ -88,11 +92,11 @@ That distinction became one of the most useful lessons I took from the entire bu
 
 I had encountered the problem as backlash. What I eventually had to understand was eccentricity.
 
-## 3D printing made tolerances real
+## 3D printing made tolerances tangible
 
 Before this project, I largely understood tolerances as an abstract engineering consideration. OpenAstroExplorer made them physical.
 
-The mount combines printed plastic parts with manufactured shafts, bearings, fasteners and aluminium extrusion. A fraction of a millimetre that appears negligible on a computer screen can become significant when two parts are expected to rotate concentrically or hold a gear in precise alignment.
+The mount combines printed plastic parts with manufactured shafts, bearings, fasteners and aluminium extrusion. A fraction of a millimetre that appears negligible on a CAD model can become significant when two parts are expected to rotate concentrically or hold a gear in precise alignment.
 
 Even preparing the aluminium extrusion introduced practical challenges. Sections had to be cut, holes drilled and threads tapped for M5 bolts. A slightly uneven cut might be irrelevant in one location but problematic in another. A bolt passing through a hole with some clearance could appear perfectly acceptable until the assembly depended on that part for alignment.
 
@@ -104,13 +108,13 @@ That is an idea I understood far better after repeatedly assembling and disassem
 
 The computer controlling the mount provided a different type of lesson.
 
-I initially experimented with a Jetson Nano. On paper, it was the more capable computer and therefore seemed like the obvious choice. In practice, I repeatedly encountered boot and display problems which consumed time without bringing the mount any closer to working.
+I initially experimented with using a Jetson Nano. On paper, it was the more capable computer and therefore seemed like the obvious choice. In practice, I repeatedly encountered boot and display problems which consumed time without bringing the mount any closer to working.
 
-Eventually, I abandoned that approach and used a spare Raspberry Pi 3B.
+Eventually, I stopped trying to force that setup and used a spare Raspberry Pi 3B instead.
 
 It was older and considerably less impressive in terms of raw specification, but it booted reliably and performed the task I actually required from it. I installed a lightweight Linux environment, configured the necessary astronomy software and eventually had it operating consistently as the mount computer.
 
-It was a useful correction to my tendency to equate greater capability with a better solution. Engineering is ultimately constrained by purpose. The more powerful component is irrelevant if the simpler one fulfils the requirement more reliably.
+It was a useful correction to the assumption that greater capability automatically makes something the better engineering choice. The more powerful component is irrelevant if the simpler one fulfils the requirement more reliably.
 
 ## Connecting the mount to the rest of the system
 
@@ -168,13 +172,15 @@ Where the image demonstrates it is actually pointing
 
 The error between them can then be used to correct the mount.
 
-I found this particularly interesting because it transformed the mount from an essentially open-loop mechanical system into something capable of checking its own assumptions against external information. Rather than trusting the model blindly, the software observes reality and uses the discrepancy to improve the result.
+I found this particularly interesting because it transforms the mount from a system relying primarily on its own calculated position into one that can verify that calculation against external information.
 
-That principle extends far beyond astronomy. Models are useful precisely because they simplify reality, but their usefulness depends on continuously testing whether their assumptions remain consistent with what can actually be observed.
+Rather than trusting the model blindly, the software observes reality and uses the discrepancy to improve the result.
+
+That principle extends beyond astronomy. Models simplify reality, but their usefulness still depends on whether their assumptions remain consistent with what can actually be observed.
 
 ## Working around the real world
 
-Of course, the physical environment imposed constraints of its own.
+The physical environment imposed constraints of its own.
 
 My garden does not provide an unobstructed 360-degree horizon; the house blocks a substantial part of the sky behind the mount. Some procedures described neatly in documentation therefore become considerably less neat when attempted in a real garden.
 
@@ -184,11 +190,11 @@ Ekos can perform a computer-assisted polar-alignment routine by capturing and pl
 
 My initial reaction was to assume that it had failed.
 
-Understanding what it was attempting to calculate made the behaviour more comprehensible. Each image formed part of the geometric information needed to estimate the mount's rotational axis relative to the celestial pole. What initially looked like the software doing very little was, in reality, a process I simply had not understood.
+Understanding what it was attempting to calculate made the behaviour more comprehensible. Each image formed part of the geometric information needed to estimate the mount's rotational axis relative to the celestial pole. What initially looked like the software doing very little was, in reality, a process I simply had not understood properly yet.
 
-This happened repeatedly throughout OpenAstroExplorer. The point at which I became less frustrated with a problem was normally the point at which I stopped asking *why is this not working?* and began asking *what is the system actually trying to do?*
+This happened repeatedly throughout OpenAstroExplorer. The point at which I became less frustrated with a problem was normally the point at which I stopped asking only *why is this not working?* and began asking *what is the system actually trying to do?*
 
-The distinction sounds minor, but it changed the direction of my debugging.
+That distinction changed the direction of my debugging.
 
 ## What the project actually taught me
 
@@ -202,7 +208,7 @@ The more important development was in how I approached unfamiliar problems.
 
 At the beginning, a malfunctioning mount felt like one enormous problem. By the end, I had become much more comfortable separating it into layers: electronics, firmware, networking, coordinate configuration, mechanical alignment and software. I learnt to establish what I knew was working before investigating what was not; to alter one variable rather than several; to measure where measurement was possible; and, perhaps most importantly, to question the assumptions that appeared too obvious to question.
 
-Some of the hardest problems were ultimately caused by the smallest details. A motor's wires were in the wrong sequence. A connector was not properly seated. A reference voltage was too low. A 5 mm shaft was sitting inside a 6 mm bore. A more powerful computer was simply less useful than an older Raspberry Pi that worked reliably.
+Some of the hardest problems were ultimately caused by the smallest details. A motor's wires were in the wrong sequence. A connector was loose. A current setting was too low. A 5 mm shaft was sitting inside a 6 mm bore. A more powerful computer was simply less useful than an older Raspberry Pi that worked reliably.
 
 None of these discoveries required particularly advanced engineering knowledge. They required persistence, a willingness to revisit assumptions and enough humility to accept that the problem could be something basic that I had overlooked.
 
@@ -210,14 +216,14 @@ That is probably the part of the project I value most.
 
 I am not an electrical engineer, a mechanical engineer or an astronomer, and the project certainly did not turn me into one. There is still a great deal about the mount, and about astrophotography more broadly, that I do not understand.
 
-What changed was my reaction to that lack of understanding.
+What changed was how comfortable I became working within that gap in knowledge.
 
-Entering an unfamiliar technical area now feels less like evidence that I am unqualified to solve the problem and more like the beginning of the process required to solve it. Documentation can be read, systems can be decomposed, measurements can be taken and assumptions can be tested.
+Instead of treating an unfamiliar technical problem as something I should already know how to solve, I became more systematic about finding the information I was missing: reading documentation, breaking the system into smaller parts, testing components independently and checking assumptions against measurements.
 
-For me, OpenAstroExplorer ultimately became less about constructing a mount and more about learning how to investigate a complex system.
+For me, OpenAstroExplorer ultimately became less about simply assembling a mount and more about understanding how a relatively complicated system behaves when its individual parts interact.
 
-The final objective is still astrophotography. I want to refine the mechanics further, improve the software configuration and eventually use the mount to produce images that justify the time I have spent building it.
+The final objective is still astrophotography. I want to refine the mechanics further, improve the software configuration and eventually use the mount to produce better images.
 
-Yet the most valuable outcome has already occurred.
+But the project has already been worthwhile because of how much I had to understand in order to make it work.
 
-The project taught me that understanding rarely arrives all at once. More often, it develops through a succession of small failures, each removing one incorrect assumption until the system begins to make sense.
+Most of that understanding did not come from getting things right the first time. It came from identifying, one problem at a time, exactly why they were going wrong.
