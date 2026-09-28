@@ -18,15 +18,45 @@ The project was often frustrating. Motors refused to move, drivers became unexpe
 
 Very little worked perfectly the first time, and most of the useful learning came from understanding why.
 
+<figure>
+  <img
+    src="/images/openastro/final-mount.jpg"
+    alt="Completed OpenAstroExplorer mount assembled on a tripod"
+  />
+  <figcaption>
+    The assembled OpenAstroExplorer mount during testing.
+  </figcaption>
+</figure>
+
 ## Building the hardware
 
 Much of the hardware was adapted from components I either already owned or could source relatively cheaply. The controller was an MKS Gen L v2.1, originally designed for 3D-printer applications, whilst the mount itself combined 3D-printed parts with aluminium extrusion, shafts, gears and stepper motors.
+
+<figure>
+  <img
+    src="/images/openastro/workbench-build.jpg"
+    alt="OpenAstroExplorer components being assembled on my desk alongside the project documentation"
+  />
+  <figcaption>
+    Working through the OpenAstroExplorer documentation during assembly.
+  </figcaption>
+</figure>
 
 The two principal axes of an equatorial mount are right ascension and declination. For these I used NEMA 17 motors, controlled through TMC2209 stepper drivers. The altitude and azimuth adjustment mechanisms used smaller modified 28BYJ-48 motors with A4988 drivers.
 
 Individually, none of these components is especially unusual. The difficulty emerged from their interaction.
 
 Different motors required different current settings; the drivers had different configuration requirements; the physical board I owned did not always correspond perfectly with the diagrams I was using; and small mechanical imperfections that appeared insignificant in isolation became far more important once translated through a gear train.
+
+<figure>
+  <img
+    src="/images/openastro/hardware-controller.jpg"
+    alt="OpenAstroExplorer mechanical assembly alongside the MKS Gen L v2.1 controller"
+  />
+  <figcaption>
+    Part of the mechanical assembly alongside the MKS Gen L v2.1 controller.
+  </figcaption>
+</figure>
 
 This was probably the first point at which the project changed the way I approached technical problems. Initially, when something failed, I tended to regard the system as a whole: *the motor is not moving, therefore something about the mount is broken*. That description was technically true, but almost useless.
 
@@ -76,6 +106,16 @@ The declination mechanism developed significant backlash when changing direction
 
 My immediate assumption was that the worm and worm wheel were badly meshed.
 
+<figure>
+  <img
+    src="/images/openastro/dec-worm-gear.jpg"
+    alt="Close-up of the declination worm gear and brass worm wheel"
+  />
+  <figcaption>
+    The declination drivetrain while I was investigating the backlash problem.
+  </figcaption>
+</figure>
+
 This appeared reasonable. Moving the components closer reduced some of the backlash; moving them further apart increased it. However, attempts to correct the mesh created other problems. In some positions the assembly rotated freely, whilst in others the brass wheel began contacting the housing. Removing the cover could make the system noticeably smoother, only for the resistance to return once everything was assembled again.
 
 For a while, I concentrated almost entirely on alignment.
@@ -83,6 +123,16 @@ For a while, I concentrated almost entirely on alignment.
 The useful clue came from noticing that the resistance varied depending on the rotational position of the worm wheel. A purely fixed alignment problem should not have changed so significantly as the wheel rotated, which suggested that the wheel itself was not remaining concentric.
 
 The reason was surprisingly simple: the brass worm wheel had a **6 mm bore mounted onto a 5 mm steel shaft**.
+
+<figure>
+  <img
+    src="/images/openastro/shaft-measurement.jpg"
+    alt="Measuring the steel shaft with a caliper while diagnosing the worm wheel fit"
+  />
+  <figcaption>
+    Measuring the shaft helped identify the dimensional mismatch behind the eccentricity.
+  </figcaption>
+</figure>
 
 It was secured using a single grub screw. Tightening the screw therefore did not centre the shaft inside the bore; it pushed the shaft against one side. The wheel was consequently mounted slightly eccentrically. Depending on its orientation, one side could sit acceptably whilst the opposite side moved far enough to interfere with the surrounding housing.
 
@@ -121,6 +171,16 @@ It was a useful correction to the assumption that greater capability automatical
 Once the electronics and mechanics were functioning sufficiently well, the project moved from hardware into software.
 
 The Raspberry Pi runs an **INDI server**, which provides a standard interface between astronomical hardware and control software. My Mac then runs **KStars and Ekos** as the client, communicating with the Pi across the local network.
+
+<figure>
+  <img
+    src="/images/openastro/pi-controller.jpg"
+    alt="Raspberry Pi 3B and MKS Gen L controller used in the OpenAstroExplorer system"
+  />
+  <figcaption>
+    The Raspberry Pi 3B and MKS controller forming the computing and hardware-control layers of the setup.
+  </figcaption>
+</figure>
 
 The architecture therefore became something closer to this:
 
