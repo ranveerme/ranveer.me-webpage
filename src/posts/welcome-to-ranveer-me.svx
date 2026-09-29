@@ -1,7 +1,7 @@
 ---
 title: "Welcome to ranveer.me"
 description: "Why I built this site, what I plan to write about, and what I’m interested in exploring."
-date: 2026-09-28
+date: 2026-09-14
 published: true
 tag: personal
 ---
