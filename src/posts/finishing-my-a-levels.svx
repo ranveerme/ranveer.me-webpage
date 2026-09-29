@@ -3,7 +3,7 @@ title: "Finishing My A Levels: What I Learned Along the Way"
 description: "A short reflection on finishing my A Levels, the people who helped me through them, and the lessons I want to carry forward."
 date: 2026-08-13
 published: true
-tag: personal
+tag: education
 ---
 
 # Finishing My A Levels: What I Learned Along the Way
