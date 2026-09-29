@@ -1,0 +1,437 @@
+---
+title: "Rebuilding ranveer.me: Understanding What Happens After the Code"
+description: "A reflection on rebuilding my personal website with SvelteKit, MDsveX, GitHub Actions, GitHub Pages and Route 53, and what the process taught me about deployment, DNS and web infrastructure."
+date: 2026-09-29
+published: true
+tag: technology
+---
+
+# Rebuilding ranveer.me: Understanding What Happens After the Code
+
+I had built versions of my personal website before, but most of my understanding stopped at the point where the code worked locally.
+
+I understood HTML, CSS and the basic structure of a web application reasonably well. What I understood far less clearly was everything that happened after that: how a project moves from files on my laptop to a live website, how a domain finds the correct server, what GitHub Actions is actually doing during deployment, and why a site can work perfectly at `localhost` yet fail once it is placed behind a real URL.
+
+Rebuilding **ranveer.me** forced me to understand those layers properly.
+
+The final site is relatively simple. It is a static SvelteKit website with a Markdown-based writing system.
+
+Getting there was less simple.
+
+## Starting again rather than patching the old site
+
+I already had an older version of `ranveer.me`, along with an existing GitHub Pages repository and a deployment through Vercel.
+
+Rather than continuing to modify that setup, I decided to rebuild the site around a cleaner architecture.
+
+I started from a SvelteKit MDsveX blog template, but quite quickly the project stopped resembling the original template. I rewrote the homepage, navigation, footer, contact and about pages; removed the sample posts; replaced the original metadata; changed the routing language from “Journal” to “Writing”; and adapted the design around the things I actually wanted to write about.
+
+The technology choice itself was fairly straightforward.
+
+**SvelteKit** handles the application structure, routing and components. **MDsveX** allows individual articles to be written as `.svx` files, which means I can use Markdown for most of the writing whilst still having access to Svelte components when needed.
+
+A post can therefore begin with a small amount of metadata:
+
+```yaml
+---
+title: "Example Post"
+description: "A short description."
+date: 2026-09-29
+published: true
+tag: technology
+---
+```
+
+and the site can use that information to automatically construct the writing page, tag pages and individual article routes.
+
+I liked the separation this created.
+
+The writing remains essentially plain text, whilst the application controls how that content is presented.
+
+## Understanding Git rather than just using Git commands
+
+One part of the rebuild that exposed a gap in my understanding was Git.
+
+I had used GitHub before, but there is a difference between knowing a sequence of commands and understanding what those commands are actually doing.
+
+The local project first had to become its own repository rather than remaining tied to the original template history.
+
+That meant removing the existing Git metadata, initialising a new repository and creating a fresh commit history:
+
+```bash
+git init
+git add .
+git commit -m "Initial ranveer.me blog"
+```
+
+At that point, nothing had been uploaded anywhere.
+
+That distinction became much clearer during this project.
+
+`git add` prepares changes for a commit.
+
+`git commit` creates a snapshot in the local repository.
+
+`git push` sends those commits to the remote repository.
+
+They are separate operations, and understanding that model made Git considerably less mysterious.
+
+I also ran into a practical problem almost immediately. I had created the new GitHub repository with an initial file already inside it, meaning the local and remote repositories had different histories.
+
+My first push was therefore rejected.
+
+The fix involved fetching the remote state and then replacing that initial remote history with the local repository I actually wanted to use. I also configured GitHub authentication properly rather than treating access to the remote repository as something that happened automatically.
+
+None of this was particularly advanced, but it was useful because I was forced to understand why Git was refusing the operation instead of just trying different commands until one succeeded.
+
+## Moving from a server deployment to a static build
+
+The original template was configured around a Cloudflare deployment adapter.
+
+That was unnecessary for what I wanted.
+
+The site has no database, no authentication system and no requirement to generate pages dynamically for every visitor. Most of the content changes only when I write or edit something.
+
+A static site therefore made more sense.
+
+I replaced the Cloudflare adapter with SvelteKit's static adapter and configured the project to prerender the site into a `build` directory.
+
+Conceptually, the process became:
+
+```text
+SvelteKit source
+       ↓
+npm run build
+       ↓
+prerendered HTML / CSS / JavaScript
+       ↓
+build/
+       ↓
+GitHub Pages
+```
+
+This clarified an important distinction for me.
+
+SvelteKit is the framework I use to **develop** the site, but a visitor does not require a SvelteKit server to be running in order to read it.
+
+The framework can generate the final pages ahead of time.
+
+Once I understood that, the hosting requirements became much simpler.
+
+## Automating deployment with GitHub Actions
+
+The next step was getting the build onto GitHub Pages.
+
+I could have built the site manually and uploaded the output each time, but that would have created an unnecessary step every time I changed something.
+
+Instead, I created a GitHub Actions workflow.
+
+The workflow runs whenever code is pushed to the `main` branch. It checks out the repository, installs Node, installs the project dependencies, builds the SvelteKit site and uploads the resulting `build` directory to GitHub Pages.
+
+The deployment process effectively became:
+
+```text
+Edit locally
+    ↓
+git add .
+    ↓
+git commit
+    ↓
+git push
+    ↓
+GitHub Actions
+    ↓
+npm ci
+    ↓
+npm run build
+    ↓
+GitHub Pages
+```
+
+The first successful green deployment was probably the point at which I properly understood what people mean by a CI/CD pipeline.
+
+In this case, it is a very small one, but the principle is the same: the process used to turn source code into the deployed application is defined and automated rather than relying on a series of manual steps.
+
+Now, when I publish a new article, I do not manually upload anything to the website.
+
+I commit the file and push it.
+
+The deployment workflow handles the rest.
+
+## The site worked — except for every other page
+
+The first GitHub Pages deployment appeared to work.
+
+The homepage loaded at:
+
+```text
+https://ranveerme.github.io/ranveer.me-webpage/
+```
+
+However, clicking something like **Writing** immediately produced a 404.
+
+Instead of going to:
+
+```text
+https://ranveerme.github.io/ranveer.me-webpage/journal
+```
+
+the browser went to:
+
+```text
+https://ranveerme.github.io/journal
+```
+
+The reason was the way I had written the internal links.
+
+A path such as:
+
+```html
+href="/journal"
+```
+
+starts at the root of the hostname.
+
+That is exactly what I want when the site lives at:
+
+```text
+https://ranveer.me/
+```
+
+because `/journal` correctly resolves to:
+
+```text
+https://ranveer.me/journal
+```
+
+But the temporary GitHub Pages URL was a **project site**, meaning the application was temporarily sitting beneath `/ranveer.me-webpage/`.
+
+I could have modified SvelteKit's base path to make that temporary URL work. Doing so would have solved a problem that would disappear once the custom domain was connected, whilst introducing configuration that I would later have to undo.
+
+So I left it.
+
+That was a useful example of distinguishing between an actual architectural problem and a temporary consequence of the deployment environment.
+
+Not every error needs to be fixed in the place where it first appears.
+
+## DNS was the part I understood least
+
+Connecting the custom domain was probably the most useful part of the project because DNS had previously been something I understood only vaguely.
+
+My domain is managed through **AWS Route 53**.
+
+At the start of the migration, the DNS records for `ranveer.me` were still pointing towards Vercel.
+
+The root domain had an A record associated with the old deployment, whilst `www.ranveer.me` used a CNAME pointing towards Vercel's DNS infrastructure.
+
+Moving the site therefore involved more than changing a setting in GitHub.
+
+The domain needed to stop resolving towards Vercel and begin resolving towards GitHub Pages.
+
+For the apex domain, I configured the appropriate GitHub Pages A records.
+
+For `www`, I changed the CNAME so that it pointed towards the GitHub Pages hostname for my account.
+
+The route became:
+
+```text
+ranveer.me
+    ↓
+Route 53
+    ↓
+DNS records
+    ↓
+GitHub Pages
+    ↓
+ranveer.me-webpage deployment
+```
+
+This made DNS much easier to understand.
+
+The domain name itself does not contain the website.
+
+It is a way of finding the infrastructure that serves the website.
+
+Route 53 answers the question of where requests for `ranveer.me` should go; GitHub Pages then serves the files produced by the deployment workflow.
+
+Once GitHub confirmed the DNS configuration, it was able to provision the TLS certificate required to serve the site securely over HTTPS.
+
+A process I had previously treated as one vague concept — “connecting a domain” — was actually several separate systems working together.
+
+## The old repository made the setup slightly more confusing
+
+There was another complication.
+
+I already had an older repository named:
+
+```text
+ranveerme.github.io
+```
+
+That name has a particular meaning within GitHub Pages because `username.github.io` is the account-level Pages hostname.
+
+At first, this made the DNS configuration look wrong.
+
+For `www.ranveer.me`, the CNAME needed to point to:
+
+```text
+ranveerme.github.io
+```
+
+which looked as though I was directing visitors towards the old repository.
+
+In reality, the DNS target identifies the GitHub Pages infrastructure associated with my account. GitHub then uses the custom-domain configuration to determine which Pages deployment should answer for `ranveer.me`.
+
+That distinction between a DNS hostname and a repository name was another example of the same broader problem I encountered throughout the build: two things can look closely related whilst operating at completely different layers of the system.
+
+## Building for desktop was not the same as building for a phone
+
+Once the site was live, I opened it on my phone.
+
+It looked considerably worse than it did on my Mac.
+
+My name overflowed the hero section. The mobile navigation was partially transparent against the animated homepage. The footer occupied too much vertical space. Long article titles broke awkwardly and the writing itself was compressed into an unnecessarily narrow column.
+
+None of those problems appeared serious whilst developing on a large display.
+
+They became immediately obvious on a phone.
+
+The article layout was a particularly useful example. There was nothing wrong with the font size itself. The problem was accumulated padding.
+
+The site's main container had horizontal padding. The post container added more. The glass-card component added padding again, and the `.prose` article added another layer.
+
+Each decision was individually reasonable.
+
+Together, they consumed a substantial proportion of a mobile screen.
+
+The solution was not simply to make everything smaller. Instead, I added responsive styles that reduced the nested padding and adjusted headings at narrower breakpoints whilst leaving the desktop layout intact.
+
+That reinforced something I had already encountered in the hardware project: locally reasonable decisions can produce poor behaviour once they interact.
+
+Responsive design is another systems problem.
+
+## Adding analytics without turning the site into an advertising platform
+
+I also wanted some idea of whether anybody was actually reading the site.
+
+Initially I considered Google Tag Manager and Google Analytics, but for a small personal blog I did not need the level of user tracking associated with a more complicated analytics stack.
+
+Instead, I added **Cloudflare Web Analytics**.
+
+The site does not use Cloudflare for DNS or hosting. The analytics service simply loads a small beacon from the site and provides aggregate information such as page views, traffic sources and general usage.
+
+The implementation itself was minimal:
+
+```html
+<script
+  type="module"
+  src="https://static.cloudflareinsights.com/beacon.min.js"
+  data-cf-beacon='{"token":"..."}'
+></script>
+```
+
+What interested me more was the decision about what I actually wanted to measure.
+
+There is a difference between understanding whether people are reading a site and trying to construct detailed profiles of the people reading it.
+
+For this website, the former is enough.
+
+## Making the site discoverable
+
+Building the site also exposed another distinction I had previously overlooked: a website being publicly accessible does not mean a search engine immediately knows it exists.
+
+The original template still contained a `robots.txt` file and sitemap pointing towards the template creator's domain.
+
+Those had to be replaced.
+
+The site's `robots.txt` now explicitly allows crawling and points search engines towards:
+
+```text
+https://ranveer.me/sitemap.xml
+```
+
+The sitemap lists the important routes on the site so that crawlers have a clearer description of what is available.
+
+I also updated the homepage metadata and added structured data describing the relationship between my name, the website, my GitHub profile and my LinkedIn profile.
+
+Finally, I verified the domain through **Google Search Console** by adding a TXT record in Route 53.
+
+Again, several technologies were involved in something that initially sounded like one task:
+
+```text
+Search Console
+      ↓
+DNS TXT verification
+      ↓
+robots.txt
+      ↓
+sitemap.xml
+      ↓
+page metadata
+      ↓
+structured data
+      ↓
+Google crawling and indexing
+```
+
+Search visibility is not something the framework automatically provides. The site has to expose enough information for crawlers to discover and understand it.
+
+## What I actually learnt
+
+Like OpenAstroExplorer, the website could easily be described by listing technologies:
+
+SvelteKit, TypeScript, MDsveX, Git, GitHub Actions, GitHub Pages, Route 53, Cloudflare Web Analytics and Google Search Console.
+
+I did learn how to use all of those more effectively.
+
+But the more useful lesson was understanding the boundaries between them.
+
+When a website fails, “the website is broken” is not a particularly useful diagnosis.
+
+The application can work whilst the build fails.
+
+The build can work whilst the deployment fails.
+
+The deployment can work whilst DNS points somewhere else.
+
+DNS can be correct whilst HTTPS is still being provisioned.
+
+The site can be publicly accessible whilst Google has not indexed it.
+
+The desktop layout can work perfectly whilst the mobile layout is almost unusable.
+
+Once those layers are separated, debugging becomes much more manageable.
+
+Instead of treating the website as one thing, I started thinking about it as a sequence:
+
+```text
+Source code
+    ↓
+Build
+    ↓
+Deployment
+    ↓
+Hosting
+    ↓
+DNS
+    ↓
+HTTPS
+    ↓
+Browser
+    ↓
+Search engines / analytics
+```
+
+Each layer has a different responsibility, and each can fail independently.
+
+That is probably the main thing I gained from rebuilding `ranveer.me`.
+
+I am still using frameworks, hosting platforms and services that abstract away a large amount of complexity. I certainly could not reproduce GitHub Pages or Route 53 from scratch, nor is that the point.
+
+What changed was that I now have a much clearer understanding of what each service is doing on my behalf.
+
+The site itself is still fairly small, and there are plenty of things I will change as I add more writing and projects.
+
+But I am much happier maintaining it now because I understand considerably more of the path between editing a file on my laptop and somebody else typing `ranveer.me` into their browser and seeing it.
+
+Most of the useful learning came from the points where that path broke.
