@@ -1,12 +1,12 @@
 ---
-title: "Learning Tabla"
+title: "Learning the Tabla"
 description: "A reflection on learning tabla from a young age, the Benares Gharana, performing, and returning to an instrument that has been part of my life for years."
 date: 2026-09-26
 published: true
 tag: personal
 ---
 
-# Learning Tabla
+# Learning the Tabla
 
 I started learning the tabla when I was five years old. At that age, it was honestly just something that became part of my routine - lessons, practice, learning new compositions and slowly getting more comfortable with the instrument as well as having fun. I did not really think about what I was getting from it beyond learning how to play.
 
