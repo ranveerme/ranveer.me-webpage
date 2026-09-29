@@ -51,6 +51,7 @@ Different motors required different current settings; the drivers had different 
 
 <figure>
   <img
+    class="portrait-photo"
     src="/images/openastro/hardware-controller.jpeg"
     alt="OpenAstroExplorer mechanical assembly alongside the MKS Gen L v2.1 controller"
   />
