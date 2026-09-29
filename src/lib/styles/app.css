@@ -192,6 +192,25 @@
   .prose td {
     @apply border border-gray-700 p-2;
   }
+  .prose .portrait-photo {
+    width: auto;
+    max-width: 72%;
+    max-height: 650px;
+    margin-left: auto;
+    margin-right: auto;
+    object-fit: contain;
+  }
+
+  @media (max-width: 640px) {
+    .prose .portrait-photo {
+      max-width: 90%;
+      max-height: 70vh;
+    }
+}
+
+
+
+
 }
 
 @layer utilities {
