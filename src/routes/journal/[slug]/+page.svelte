@@ -139,4 +139,56 @@
     font-size: 0.875rem;
     color: #9ca3af;
   }
+
+@media (max-width: 640px) {
+  .post-container {
+    padding: 0;
+  }
+
+  .post-header {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose {
+    padding: 1.25rem;
+  }
+
+  .title {
+    font-size: 2rem;
+    line-height: 1.15;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .description {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .back-button-container {
+    margin-bottom: 1.25rem;
+  }
+
+  :global(.prose p) {
+    line-height: 1.65;
+  }
+
+  :global(.prose h1) {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  :global(.prose h2) {
+    font-size: 1.6rem;
+    line-height: 1.25;
+  }
+
+  :global(.prose h3) {
+    font-size: 1.3rem;
+    line-height: 1.3;
+  }
+}
+
+
 </style>
