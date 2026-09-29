@@ -63,7 +63,7 @@
   }
 
   .post-header {
-    margin-bottom: 3rem;
+    margin-bottom: 1.25rem;
     padding: 2rem;
     position: relative;
     overflow: hidden;
