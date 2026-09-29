@@ -192,6 +192,16 @@
   .prose td {
     @apply border border-gray-700 p-2;
   }
+
+  .prose figcaption {
+  margin-top: 0.6rem;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.55);
+  }
+
   .prose .portrait-photo {
     width: auto;
     max-width: 72%;
