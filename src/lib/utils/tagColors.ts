@@ -15,7 +15,7 @@ export function getTagColor(tagName: string): string {
     // General topics
     education: "#A78BFA", // Soft purple
     technology: "#22D3EE", // Cyan
-    projects: "#F59E0B"
+    projects: "#F59E0B",
     
     // Web Technologies
     css: "#38B2AC", // Bright teal
