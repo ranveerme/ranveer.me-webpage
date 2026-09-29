@@ -12,6 +12,10 @@ export function getTagColor(tagName: string): string {
     "next.js": "#00C7B7", // Bright teal (changed from white)
     svelte: "#FF3E00", // Bright orange
 
+    // General topics
+    education: "#A78BFA", // Soft purple
+    technology: "#22D3EE", // Cyan
+
     // Web Technologies
     css: "#38B2AC", // Bright teal
     html: "#E34F26", // Bright orange-red
