@@ -94,8 +94,8 @@
   /* Custom prose styles for markdown content */
   .prose {
     @apply max-w-none text-[#efebe9];
-    overflow-wrap: break-word;
-    word-wrap: break-word;
+    overflow-wrap: normal;
+    word-wrap: normal;
   }
 
   .prose h1,
