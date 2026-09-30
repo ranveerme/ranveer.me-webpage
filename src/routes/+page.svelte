@@ -4,6 +4,7 @@
 
 <svelte:head>
   <title>Ranveer Singh Wilkhu | Economics, Finance & Technology</title>
+  <link rel="canonical" href="https://ranveer.me/" />
 
   <meta
     name="description"
