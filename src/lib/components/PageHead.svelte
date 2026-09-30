@@ -17,9 +17,9 @@
 </div>
 
 <svelte:head>
-  <title>{title} | Loke.dev</title>
+  <title>{title} | Ranveer Wilkhu</title>
 
-  <meta property="og:site_name" content="Loke.dev" />
+  <meta property="og:site_name" content="Ranveer Wilkhu" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
 </svelte:head>
