@@ -1,0 +1,186 @@
+---
+title: "Analysing Bank of England Decisions and UK Bank Stocks"
+description: "My first financial event study, using Python to examine how UK bank shares behaved around Bank of England interest rate decisions and what I learnt from the process."
+date: 2026-10-12
+published: true
+tag: finance
+---
+
+# Analysing Bank of England Decisions and UK Bank Stocks
+
+I've been interested in programming for quite a long time. My dad first introduced me to Python when I was younger, and I continued developing my understanding of it through GCSE Computer Science. Since then, I've used programming in various projects, although until recently, very little of that had involved financial data.
+
+Now that I'm studying Economics and Finance at university, I wanted to find a way to combine the two. In particular, I was interested in taking something I had learnt about in economics, such as monetary policy, and examining how it actually relates to financial markets.
+
+This led me to a question: **how do UK bank shares behave around Bank of England interest rate decisions, and does that behaviour differ depending on whether rates are raised, cut or held?**
+
+It seemed like a relatively straightforward question at first. As I worked through the project, I realised there was considerably more to it than downloading some share prices and comparing them.
+
+<figure>
+  <img
+    src="/images/boe/London-bankofengland.jpg"
+    alt="The Bank of England headquarters on Threadneedle Street in London"
+    decoding="async"
+  />
+  <figcaption>
+    The Bank of England, Threadneedle Street, London.
+  </figcaption>
+</figure>
+
+## Starting with the Data
+
+I decided to examine four major UK-listed banks: **Lloyds, NatWest, Barclays and HSBC**, comparing their share price movements against the FTSE 100.
+
+I deliberately chose banks with different business models and levels of international exposure. Lloyds and NatWest have particularly strong connections to UK retail and commercial banking, whereas HSBC operates much more internationally. I was curious whether this might affect how strongly each bank responded to changes in UK monetary policy.
+
+My initial expectation was that the more UK-focused banks might react more strongly, although I haven't directly tested that hypothesis yet.
+
+Using Python and the `yfinance` library, I downloaded historical share prices, trading volumes and dividend information. The analysis covered **16 scheduled Bank of England decisions across 2023 and 2024**, comprising five rate increases, nine holds and two cuts.
+
+With four banks examined around each decision, I ended up with **64 bank-announcement observations**.
+
+The challenge was deciding what to do with them.
+
+## Working Out What to Measure
+
+My first approach was to calculate the percentage change in each bank's closing share price around an announcement.
+
+However, it became clear that simply knowing whether a share price rose or fell wasn't especially informative.
+
+If Barclays fell by 1.5% on a particular day, that could suggest a negative reaction to the Bank of England's announcement. But what if the wider market had fallen by 2%? Barclays would actually have performed relatively well.
+
+I therefore introduced **market-adjusted returns**, subtracting the FTSE 100's daily return from that of each bank.
+
+This gave me a way to examine whether the banks were outperforming or underperforming a broader market benchmark.
+
+I then expanded the analysis to include a **three-day cumulative abnormal return (CAR)**, covering the trading day before the announcement, the announcement itself and the following trading day.
+
+The idea was to avoid drawing conclusions from just one closing price. Markets can anticipate announcements, and share prices may continue adjusting afterwards.
+
+One example from my results illustrates why this mattered.
+
+On **1 February 2024**, Barclays underperformed the FTSE 100 by approximately **1.49 percentage points** on announcement day. However, its three-day CAR was actually **positive at 1.04 percentage points**, largely because its relative performance improved the following day.
+
+Two different measurement windows therefore gave quite different impressions of the same event.
+
+Finally, I included **relative trading volume**, comparing the number of shares traded on an announcement day with the average over the preceding 20 trading days.
+
+I wanted to examine not just how prices were changing, but whether announcements coincided with unusual levels of trading activity.
+
+## Developing My Python Skills
+
+Although Python wasn't new to me, this project was quite different from much of the programming I had done previously.
+
+Through GCSE Computer Science, I had become comfortable with concepts such as variables, lists, arrays, loops and functions. However, applying those skills to historical financial data required a much better understanding of how information is structured and manipulated.
+
+I spent a considerable amount of time learning to work with **pandas DataFrames**, which allowed me to organise data into tables with labelled rows and columns.
+
+This built on my earlier experience with arrays, lists and structured data. Rather than working with a small dataset that I could inspect manually, I was manipulating years of observations across several different securities.
+
+I became much more familiar with indexing, filtering and selecting particular rows, especially when dealing with dates. For example, finding an announcement in the dataset and selecting the surrounding three trading days required understanding the difference between a calendar date and a position within the trading data.
+
+I also learnt how useful operations such as `shift()`, `rolling()` and `groupby()` could be.
+
+`shift()` allowed me to align prices with the previous trading day's closing price when calculating returns. `rolling()` helped calculate the 20-day averages needed for relative volume, while `groupby()` allowed me to organise results according to whether the Bank of England had raised, cut or held interest rates.
+
+These functions made it possible to carry out the same calculations consistently across all 64 observations.
+
+Another area I developed was **visualisation using Matplotlib**. Previously, much of my programming had focused on producing a correct output. Here, I needed to think about how to present the results so that somebody else could understand them.
+
+That meant deciding which comparisons actually justified a graph, how to label axes accurately and how to distinguish percentage returns from percentage-point differences.
+
+I also learnt more about structuring calculated results for storage and later analysis, including exporting the final dataset to a CSV file.
+
+It was useful to see how familiar programming concepts could be applied to a substantially different kind of problem.
+
+## Learning the Financial Side
+
+The financial terminology was probably just as important a learning experience as the coding.
+
+For instance, I had heard of the FTSE 100 long before starting this project, but I hadn't properly understood how the index itself was calculated.
+
+I learnt that it is a **free-float-adjusted market-capitalisation-weighted index**. Essentially, larger companies have a greater influence on its movements, but the calculation adjusts for shares that aren't freely available for public trading.
+
+That matters because an index isn't simply the average percentage movement of its constituent companies. Understanding how the benchmark is constructed is important when using it to compare individual shares.
+
+I also developed a better understanding of dividends, particularly **ex-dividend dates**.
+
+This became relevant when I noticed that some of the announcement windows overlapped with dates on which shareholders would no longer qualify for an upcoming dividend. A share price can adjust on these dates for reasons that have little to do with monetary policy.
+
+For example, HSBC's market-adjusted return on **9 May 2024** was approximately **−4.47 percentage points**, but that day also coincided with its ex-dividend date.
+
+It would have been misleading to attribute that entire movement to the Bank of England.
+
+I therefore added a check to flag dividend overlaps and calculated the results both with and without those observations.
+
+**Five observations were flagged in total.**
+
+This was one of the more useful additions to the project because it made me think more carefully about what my data was actually measuring, rather than treating every calculated return as equally informative.
+
+I also became more familiar with the relationship between interest rates and bank profitability. Higher rates can benefit a bank's net interest income in some circumstances, but they can also increase borrowing costs, reduce demand for loans and raise concerns about credit quality.
+
+The effect is therefore not necessarily as simple as higher interest rates being good for banks and lower rates being bad.
+
+And, perhaps most importantly, markets respond to **expectations**, not just announcements. An interest rate decision that everybody anticipates may have a very different effect from one that genuinely surprises investors.
+
+That distinction became increasingly important when interpreting my results.
+
+## What the Results Showed
+
+Across the full sample, I found that:
+
+- **Rate hikes** coincided with an average three-day CAR of **−1.71 percentage points**.
+- **Rate holds** coincided with an average three-day CAR of **+0.92 percentage points**.
+- **Rate cuts** coincided with an average three-day CAR of **−4.06 percentage points**.
+
+<figure>
+  <img
+    src="/images/boe/car_by_decision.png"
+    alt="Average three-day cumulative abnormal returns around Bank of England rate decisions in 2023 and 2024"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>
+    Average three-day market-adjusted returns by monetary policy decision, including and excluding dividend overlaps.
+  </figcaption>
+</figure>
+
+The result for rate cuts was particularly interesting to me.
+
+My initial intuition had been that reducing rates might support economic activity and therefore benefit bank shares. Yet the average relative performance around cuts was negative in this sample.
+
+That doesn't necessarily contradict the economic reasoning. A cut can occur because economic conditions are weakening, and it can also affect expectations about banks' future interest income. Investors may be reacting to a combination of those factors rather than the decision itself.
+
+There is also a major limitation: **the sample contains only two rate cuts**. The relatively large negative movements around the August 2024 announcement had a substantial influence on the average.
+
+I also found that removing dividend-overlap observations did not reverse the direction of the average three-day CAR for hikes, holds or cuts.
+
+That was reassuring in a limited sense, but it certainly didn't prove that the Bank of England's decisions were responsible for the movements.
+
+The findings are descriptive, rather than evidence of a causal relationship. Other financial news, company announcements, market expectations and wider economic conditions could all have influenced the results.
+
+I think it's important to distinguish between identifying a pattern and being able to explain it confidently.
+
+## What I Took Away from the Project
+
+What I enjoyed most was having to use technical and economic knowledge together.
+
+I already knew how to write Python, but I had much less experience deciding which financial calculations were appropriate, understanding the assumptions behind them and interpreting the resulting data.
+
+It also made me appreciate the difference between a program producing an answer and that answer actually being useful.
+
+A calculation can be mathematically correct whilst answering a slightly different question from the one you intended. Subtracting the FTSE 100 return, for example, provides a useful benchmark comparison, but it does not completely isolate the effect of monetary policy. The banks themselves are constituents of the FTSE 100, and different banks will naturally have different sensitivities to wider market movements.
+
+Similarly, increasing the event window from one day to three provides more information about surrounding price movements, but it also introduces more opportunities for unrelated events to influence the result.
+
+These were considerations I hadn't appreciated properly before working with real financial data.
+
+The project also gave me more confidence in using Python for analysis beyond the kinds of tasks I had previously encountered. Working with libraries, tabular datasets, date indexes, calculations and graphical outputs is something I would like to continue developing.
+
+There are several directions in which I could extend the analysis. One would be to distinguish between **expected and unexpected interest rate decisions**, rather than simply categorising them as hikes, holds and cuts. Another would be to examine more directly whether UK-focused banks respond differently from internationally diversified ones.
+
+For now, though, I'm pleased to have completed a project that has helped me develop both my programming and my understanding of financial markets.
+
+There's plenty I would approach differently with more experience, particularly around the methodology and statistical testing, but that's part of why I wanted to do it in the first place.
+
+The full Python code, dataset, charts and methodology are available on my [GitHub repository](https://github.com/ranveerme/Bank-of-England-Decisions-UK-Bank-Stocks).
