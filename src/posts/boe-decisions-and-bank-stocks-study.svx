@@ -3,12 +3,12 @@ title: "Analysing Bank of England Decisions and UK Bank Stocks"
 description: "My first financial event study, using Python to examine how UK bank shares behaved around Bank of England interest rate decisions and what I learnt from the process."
 date: 2026-10-12
 published: true
-tag: finance
+tag: projects
 ---
 
 # Analysing Bank of England Decisions and UK Bank Stocks
 
-I've been interested in programming for quite a long time. My dad first introduced me to Python when I was younger, and I continued developing my understanding of it through GCSE Computer Science. Since then, I've used programming in various projects, although until recently, very little of that had involved financial data.
+I've been interested in programming for quite a long time. My dad first introduced me to Python when I was just in primary school, and I continued developing my understanding of it through GCSE Computer Science. Since then, I've used programming in various projects, although until recently, very little of that had involved financial data.
 
 Now that I'm studying Economics and Finance at university, I wanted to find a way to combine the two. In particular, I was interested in taking something I had learnt about in economics, such as monetary policy, and examining how it actually relates to financial markets.
 
@@ -24,18 +24,25 @@ It seemed like a relatively straightforward question at first. As I worked throu
   />
   <figcaption>
     The Bank of England, Threadneedle Street, London.
+    Photograph by Adrian Pingstone,
+    <a href="https://commons.wikimedia.org/wiki/File:London.bankofengland.arp.jpg"
+       target="_blank"
+       rel="noopener noreferrer">
+      Wikimedia Commons
+    </a>
+    (public domain).
   </figcaption>
 </figure>
 
 ## Starting with the Data
 
-I decided to examine four major UK-listed banks: **Lloyds, NatWest, Barclays and HSBC**, comparing their share price movements against the FTSE 100.
+I decided to examine four major UK listed banks: **Lloyds, NatWest, Barclays and HSBC**, comparing their share price movements against the FTSE 100.
 
 I deliberately chose banks with different business models and levels of international exposure. Lloyds and NatWest have particularly strong connections to UK retail and commercial banking, whereas HSBC operates much more internationally. I was curious whether this might affect how strongly each bank responded to changes in UK monetary policy.
 
-My initial expectation was that the more UK-focused banks might react more strongly, although I haven't directly tested that hypothesis yet.
+My initial expectation was that the more UK focused banks might react more strongly, although I haven't directly tested that hypothesis yet.
 
-Using Python and the `yfinance` library, I downloaded historical share prices, trading volumes and dividend information. The analysis covered **16 scheduled Bank of England decisions across 2023 and 2024**, comprising five rate increases, nine holds and two cuts.
+Using Python and the `yfinance` library, I downloaded historical share prices, trading volumes and dividend information. The analysis covered **16 scheduled Bank of England decisions across 2023 and 2024**, which included five rate increases, nine holds and two cuts.
 
 With four banks examined around each decision, I ended up with **64 bank-announcement observations**.
 
@@ -53,13 +60,13 @@ I therefore introduced **market-adjusted returns**, subtracting the FTSE 100's d
 
 This gave me a way to examine whether the banks were outperforming or underperforming a broader market benchmark.
 
-I then expanded the analysis to include a **three-day cumulative abnormal return (CAR)**, covering the trading day before the announcement, the announcement itself and the following trading day.
+I then expanded the analysis to include a **three day cumulative abnormal return (CAR)**, covering the trading day before the announcement, the announcement itself and the following trading day.
 
 The idea was to avoid drawing conclusions from just one closing price. Markets can anticipate announcements, and share prices may continue adjusting afterwards.
 
 One example from my results illustrates why this mattered.
 
-On **1 February 2024**, Barclays underperformed the FTSE 100 by approximately **1.49 percentage points** on announcement day. However, its three-day CAR was actually **positive at 1.04 percentage points**, largely because its relative performance improved the following day.
+On **1 February 2024**, Barclays underperformed the FTSE 100 by approximately **1.49 percentage points** on announcement day. However, its three day CAR was actually **positive at 1.04 percentage points**, largely because its relative performance improved the following day.
 
 Two different measurement windows therefore gave quite different impressions of the same event.
 
@@ -75,7 +82,7 @@ Through GCSE Computer Science, I had become comfortable with concepts such as va
 
 I spent a considerable amount of time learning to work with **pandas DataFrames**, which allowed me to organise data into tables with labelled rows and columns.
 
-This built on my earlier experience with arrays, lists and structured data. Rather than working with a small dataset that I could inspect manually, I was manipulating years of observations across several different securities.
+This built on my earlier experience with arrays, lists and structured data (like SQL). Rather than working with a small dataset that I could inspect manually, I was manipulating years of observations across several different securities.
 
 I became much more familiar with indexing, filtering and selecting particular rows, especially when dealing with dates. For example, finding an announcement in the dataset and selecting the surrounding three trading days required understanding the difference between a calendar date and a position within the trading data.
 
@@ -107,7 +114,7 @@ I also developed a better understanding of dividends, particularly **ex-dividend
 
 This became relevant when I noticed that some of the announcement windows overlapped with dates on which shareholders would no longer qualify for an upcoming dividend. A share price can adjust on these dates for reasons that have little to do with monetary policy.
 
-For example, HSBC's market-adjusted return on **9 May 2024** was approximately **−4.47 percentage points**, but that day also coincided with its ex-dividend date.
+For example, HSBC's market adjusted return on **9 May 2024** was approximately **−4.47 percentage points**, but that day also coincided with its ex-dividend date.
 
 It would have been misleading to attribute that entire movement to the Bank of England.
 
